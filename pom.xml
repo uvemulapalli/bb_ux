@@ -100,11 +100,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<resources>
-			<resource>
-				<directory>target/bb-ux</directory>
-				<targetPath>static</targetPath>
-			</resource>
-		</resources>
 	</build>
 </project>
