@@ -18,6 +18,8 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<node.version>v12.16.1</node.version>
+		<npm.version>6.14.9</npm.version>
 	</properties>
 
 	<dependencies>
@@ -51,6 +53,58 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.12.1</version>
+				<configuration>
+					<workingDirectory>src/main/root</workingDirectory>
+					<environmentVariables>
+						<NPM_CONFIG_TMP>${project.build.directory}</NPM_CONFIG_TMP>
+						<GIT_SSL_NO_VERIFY>1</GIT_SSL_NO_VERIFY>
+					</environmentVariables>
+					<nodeVersion>${node.version}</nodeVersion>
+					<npmVersion>${npm.version}</npmVersion>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<nodeVersion>${node.version}</nodeVersion>
+							<npmVersion>${npm.version}</npmVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm run build</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<argument>run build</argument>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>target/bb-ux</directory>
+				<targetPath>static</targetPath>
+			</resource>
+		</resources>
 	</build>
 </project>
