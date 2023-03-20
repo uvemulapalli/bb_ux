@@ -20,7 +20,7 @@ export class AppComponent {
   
 	dataDisplayResponseType: DataDisplayResponseType = new DataDisplayResponseType();
 	
-	blotterData: any = [];
+	blotterData: any;
 	
 	private baseUrl = 'http://localhost:5080';
 	

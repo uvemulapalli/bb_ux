@@ -26,8 +26,9 @@ public class DataDisplayController {
 	public ResponseEntity<DataDisplayResponseType> fileUpload(@RequestParam("file") MultipartFile file) {
 		DataDisplayResponseType dataDisplayResponseType = new DataDisplayResponseType();
 		File myFile = this.dataTransferServie.transferFile(file);
-		if(null != myFile) {			
+		if(null != myFile) {
 			dataDisplayResponseType.setDataDisplayResponse(this.dataFormatterService.getFormattedData(myFile));
+			myFile.delete();
 			return new ResponseEntity<DataDisplayResponseType>(dataDisplayResponseType, HttpStatus.OK);
 		}
 		dataDisplayResponseType.setErrorMessage("Unable to transfer file - " + file.getOriginalFilename());

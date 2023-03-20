@@ -47,14 +47,14 @@
 		</thead>
 		<tbody>
 			<tr *ngFor="let data of blotterData">
-				<td>{{blotterData.TradeId}}</td>
-				<td>{{blotterData.Spot}}</td>
-				<td>{{blotterData.Strike}}</td>
-				<td>{{blotterData.timeToMaturity}}</td>
-				<td>{{blotterData.IR}}</td>
-				<td>{{blotterData.Sigma}}</td>
-				<td>{{blotterData.OptionPrice}}</td>
-				<td>{{blotterData.timeTaken}}</td>
+				<td>{{data.tradeId}}</td>
+				<td>{{data.spot}}</td>
+				<td>{{data.strike}}</td>
+				<td>{{data.timeToMaturity}}</td>
+				<td>{{data.ir}}</td>
+				<td>{{data.sigma}}</td>
+				<td>{{data.optionPrice}}</td>
+				<td>{{data.timeTaken}}</td>
 			</tr>
 		</tbody>
 	</table>
