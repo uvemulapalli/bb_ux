@@ -1,6 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from "@angular/material/input";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from "@angular/material/sort";
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 
@@ -10,7 +13,10 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatTableModule,
+    MatSortModule,
     HttpClientModule
   ],
   providers: [],

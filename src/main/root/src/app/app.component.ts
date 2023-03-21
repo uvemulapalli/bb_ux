@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { Injectable } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatFormField, MatFormFieldControl } from "@angular/material/form-field";
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
@@ -20,7 +21,9 @@ export class AppComponent {
   
 	dataDisplayResponseType: DataDisplayResponseType = new DataDisplayResponseType();
 	
-	blotterData: any;
+	displayedColumns: string[] = ['TradeId', 'Spot', 'Strike', 'timeToMaturity', 'IR', 'Sigma', 'OptionPrice', 'timeTaken'];
+	
+	dataSource: any;
 	
 	private baseUrl = 'http://localhost:5080';
 	
@@ -45,6 +48,11 @@ export class AppComponent {
 		this.selectedFiles = event.target.files;
 	}
 	
+	applyFilter(event: Event) {
+		const filterValue = (event.target as HTMLInputElement).value;
+		this.dataSource.filter = filterValue.trim().toLowerCase();
+	}
+	
 	upload(): void {
 	    this.progress = 0;
 	    if (this.selectedFiles) {
@@ -61,7 +69,7 @@ export class AppComponent {
 						this.errorMessage = this.dataDisplayResponseType.errorMessage;
 						this.reset();
 					} else {
-						this.blotterData = this.dataDisplayResponseType.dataDisplayResponse;
+						this.dataSource = new MatTableDataSource(this.dataDisplayResponseType.dataDisplayResponse);
 						this.reset();
 					}
 	            }
