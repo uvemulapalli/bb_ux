@@ -1,9 +1,11 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatFormField, MatFormFieldControl } from "@angular/material/form-field";
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-root',
@@ -70,6 +72,8 @@ export class AppComponent {
 						this.reset();
 					} else {
 						this.dataSource = new MatTableDataSource(this.dataDisplayResponseType.dataDisplayResponse);
+						this.dataSource.sort = this.sort;
+          				this.dataSource.paginator = this.paginator;
 						this.reset();
 					}
 	            }
@@ -89,6 +93,18 @@ export class AppComponent {
 	      this.selectedFiles = undefined;
 	    }
 	}
+
+	@ViewChild(MatPaginator, {static: false})
+	set paginator(value: MatPaginator) {
+		this.dataSource['paginator'] = value;
+	}
+
+	@ViewChild(MatSort, {static: false})
+	set sort(value: MatSort) {
+		this.dataSource['sort'] = value;
+	}
+
+	
 }
 
 export class DataDisplayResponseType {

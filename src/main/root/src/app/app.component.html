@@ -1,18 +1,17 @@
-<h1 class="spatitle">{{title}}</h1>
+<h2 class="spatitle">{{title}}</h2>
 <hr class="titlehr">
 <div class="inputcontainer">
 	<div class="dynamicdatagenerator">
-		<h4>
+		<h3>
 			<u>For Dynamic Report :</u>
-		</h4>
+		</h3>
 	</div>
 	<div class="v1">
 		<div class="conditional">(OR)</div>
 		<div class="staticdatagenerator">
-			<h4>
+			<h3>
 				<u>Upload CSV File :</u>
-			</h4>
-			<br>
+			</h3>
 			<div class="row">
 				<div class="col-8">
 					<label class="btn btn-default p-0">
@@ -20,7 +19,7 @@
 					</label>
 				</div>
 				<div class="col-4">
-					<button class="btn btn-success btn-sm" [disabled]="!selectedFiles" (click)="upload()">Upload</button>
+					<button class="btn btn-success btn-sm upload" [disabled]="!selectedFiles" (click)="upload()">Upload</button>
 				</div>
 			</div>
 			<div *ngIf="currentFile" class="progress my-3">
@@ -31,26 +30,26 @@
 	</div>
 </div>
 <div *ngIf="dataSource" class="tabularResult">
-	<br><hr>
-	<mat-form-field> <mat-label>Filter</mat-label>
-		<input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+	<hr>
+	<mat-form-field>Filter<mat-label></mat-label>
+		<input matInput (keyup)="applyFilter($event)" placeholder="" #input>
 	</mat-form-field>
 
-	<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+	<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-align">
 		
 		<ng-container matColumnDef="TradeId">
 			<th mat-header-cell *matHeaderCellDef>Trade Id</th>
-			<td mat-cell *matCellDef="let element">{{element.TradeId}}</td>
+			<td mat-cell *matCellDef="let element">{{element.tradeId}}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="Spot">
 			<th mat-header-cell *matHeaderCellDef>Spot Price</th>
-			<td mat-cell *matCellDef="let element">{{element.Spot}}</td>
+			<td mat-cell *matCellDef="let element">{{element.spot}}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="Strike">
 			<th mat-header-cell *matHeaderCellDef>Strike Price</th>
-			<td mat-cell *matCellDef="let element">{{element.Strike}}</td>
+			<td mat-cell *matCellDef="let element">{{element.strike}}</td>
 		</ng-container>
 		
 		<ng-container matColumnDef="timeToMaturity">
@@ -60,17 +59,17 @@
 		
 		<ng-container matColumnDef="IR">
 			<th mat-header-cell *matHeaderCellDef>IR</th>
-			<td mat-cell *matCellDef="let element">{{element.IR}}</td>
+			<td mat-cell *matCellDef="let element">{{element.ir}}</td>
 		</ng-container>
 		
 		<ng-container matColumnDef="Sigma">
 			<th mat-header-cell *matHeaderCellDef>Sigma</th>
-			<td mat-cell *matCellDef="let element">{{element.Sigma}}</td>
+			<td mat-cell *matCellDef="let element">{{element.sigma}}</td>
 		</ng-container>
 		
 		<ng-container matColumnDef="OptionPrice">
 			<th mat-header-cell *matHeaderCellDef>Option Price</th>
-			<td mat-cell *matCellDef="let element">{{element.OptionPrice}}</td>
+			<td mat-cell *matCellDef="let element">{{element.optionPrice}}</td>
 		</ng-container>
 		
 		<ng-container matColumnDef="timeTaken">
@@ -86,4 +85,9 @@
 			<td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
 		</tr>
 	</table>
+	<mat-paginator [length]="dataSource.length"
+              [pageSize]="100"
+              [pageSizeOptions]="[100, 500, 1000, 2000]"
+              aria-label="Select page">
+	</mat-paginator>
 </div>

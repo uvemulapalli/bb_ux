@@ -6,6 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from "@angular/material/sort";
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { AppComponent } from './app.component';
     MatFormFieldModule,
     MatTableModule,
     MatSortModule,
+    MatPaginatorModule,
     HttpClientModule
   ],
   providers: [],
