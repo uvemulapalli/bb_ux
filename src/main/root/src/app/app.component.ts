@@ -15,7 +15,7 @@ import { MatSort } from '@angular/material/sort';
 
 export class AppComponent {
 
-	title = 'Price Blotter Report';
+	title = 'Derivative Price Report';
 
 	fileName = '';
 
