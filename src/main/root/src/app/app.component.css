@@ -26,7 +26,7 @@
 }
 
 .dynamicdatagenerator {
-	margin-left: 65px;	
+	margin-left: 65px;
 	display: inline-block;
 }
 
@@ -53,6 +53,7 @@
 
 .tabularResult{
 	height: 300px;
+	margin-left: -150px;
 }
 
 .upload{
