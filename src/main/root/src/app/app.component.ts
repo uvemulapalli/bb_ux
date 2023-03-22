@@ -1,4 +1,4 @@
-import { Component, Injectable, ViewChild } from '@angular/core';
+import { Component, Injectable, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatFormField, MatFormFieldControl } from "@angular/material/form-field";
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -6,16 +6,28 @@ import { Observable } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class AppComponent {
 
-	title = 'Derivative Price Report';
+	title = 'Derivative Prices';
+
+	tab1Title = 'Tabular Report';
+
+	displayTab1 = true;
+
+	tab2Title = 'Graphical Report';
+
+	displayTab2 = false;
+
+	tab: number = 2;
 
 	fileName = '';
 
@@ -39,7 +51,11 @@ export class AppComponent {
 
 	fileInfos?: Observable<any>;
 
-	constructor(private uploadService: FileUploadService) { }
+	constructor(private uploadService: FileUploadService) {
+      this.displayTab1 = true;
+      this.displayTab2 = false;
+      this.loadInstruments();
+	}
 
 	reset() {
 		this.currentFile = undefined;
@@ -124,6 +140,21 @@ export class AppComponent {
         }
       });
 	}
+
+  onChange(event: MatTabChangeEvent) {
+    const tab = event.tab.textLabel;
+    console.log(tab);
+    if(tab === this.tab1Title) {
+      this.displayTab1 = true;
+      this.displayTab2 = false;
+      this.loadInstruments();
+    }
+
+    if(tab === this.tab2Title) {
+      this.displayTab1 = false;
+      this.displayTab2 = true;
+    }
+  }
 
 	@ViewChild(MatPaginator, {static: false})
 	set paginator(value: MatPaginator) {

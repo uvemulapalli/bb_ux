@@ -6,7 +6,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from "@angular/material/sort";
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTabsModule } from '@angular/material/tabs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,10 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTabsModule,
+    BrowserAnimationsModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

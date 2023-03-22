@@ -1,10 +1,19 @@
 <h2 class="spatitle">{{title}}</h2>
-<hr class="titlehr">
-<div class="col-6">
-  <button class="btn btn-success btn-sm upload" (click)="loadInstruments()">Load Instruments</button>
-</div>
-<div *ngIf="dataSource" class="tabularResult">
-	<hr>
+<hr class="titlehr"><br><br>
+<mat-tab-group (selectedTabChange)="onChange($event)">
+  <mat-tab label="{{tab1Title}}">
+    <ng-template mat-tab-label>
+      <mat-icon *ngIf="displayTab1" class="example-tab-icon">thumb_up</mat-icon><h3>{{tab1Title}}</h3>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="{{tab2Title}}">
+    <ng-template mat-tab-label>
+      <mat-icon *ngIf="displayTab2" class="example-tab-icon">thumb_up</mat-icon><h3>{{tab2Title}}</h3>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+<div *ngIf="dataSource && displayTab1" class="tabularResult">
+  <br>
 	<mat-form-field>Filter<mat-label></mat-label>
 		<input matInput (keyup)="applyFilter($event)" placeholder="" #input>
 	</mat-form-field>

@@ -10,6 +10,10 @@
 	width: 415px;
 }
 
+.example-tab-icon {
+  margin-right: 8px;
+}
+
 .inputcontainer {
 	border-radius: 25px;
 	border: 1px dotted gray;
@@ -62,5 +66,5 @@
 }
 
 .table-align{
-	margin-left: -160px;
+	margin-left: -20px;
 }
