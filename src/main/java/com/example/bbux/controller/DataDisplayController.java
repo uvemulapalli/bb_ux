@@ -1,6 +1,9 @@
 package com.example.bbux.controller;
 
 import java.io.File;
+import java.util.List;
+
+import com.example.bbux.response.DataDisplayResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,5 +36,17 @@ public class DataDisplayController {
 		}
 		dataDisplayResponseType.setErrorMessage("Unable to transfer file - " + file.getOriginalFilename());
 		return new ResponseEntity<DataDisplayResponseType>(dataDisplayResponseType, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	@PostMapping(path = "/loadAllActiveInstruments", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<DataDisplayResponseType> loadAllActiveInstruments() {
+		DataDisplayResponseType dataDisplayResponseType = new DataDisplayResponseType();
+		List<DataDisplayResponse> dataDisplayResponses = this.dataFormatterService.loadAllActiveInstruments();
+		if(null == dataDisplayResponses || dataDisplayResponses.isEmpty()) {
+			dataDisplayResponseType.setErrorMessage("Unable to load instruments");
+			return new ResponseEntity<DataDisplayResponseType>(dataDisplayResponseType, HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			dataDisplayResponseType.setDataDisplayResponse(dataDisplayResponses);
+			return new ResponseEntity<DataDisplayResponseType>(dataDisplayResponseType, HttpStatus.OK);
+		}
 	}
 }
