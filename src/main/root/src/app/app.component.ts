@@ -29,27 +29,29 @@ export class AppComponent {
 
 	tab: number = 2;
 
-	fileName = '';
-
-	errorMessage = '';
-
 	dataDisplayResponseType: DataDisplayResponseType = new DataDisplayResponseType();
 
 	displayedColumns: string[] = ['ticker', 'spotPrice', 'strikePrice', 'expiry', 'volatility', 'optionPrice', 'predictedPrice', 'timeTaken'];
 
 	dataSource: any;
 
-	private baseUrl = 'http://localhost:5080';
+	private baseUrl: string = 'http://localhost:5080';
 
-	selectedFiles?: FileList;
+	message: string = '';
 
-	currentFile?: File;
+	errorMessage: string = '';
 
-	progress = 0;
+	@ViewChild(MatSort, {static: false}) set matSort(sort: MatSort) {
+      if (this.dataSource && !this.dataSource.sort) {
+          this.dataSource.sort = sort;
+      }
+  }
 
-	message = '';
-
-	fileInfos?: Observable<any>;
+	@ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
+	  if (this.dataSource && !this.dataSource.paginator) {
+      this.dataSource.paginator = paginator;
+    }
+	}
 
 	constructor(private uploadService: FileUploadService) {
       this.displayTab1 = true;
@@ -57,88 +59,32 @@ export class AppComponent {
       this.loadInstruments();
 	}
 
-	reset() {
-		this.currentFile = undefined;
-		this.selectedFiles = undefined;
-	}
-
-	selectFile(event: any): void {
-		this.selectedFiles = event.target.files;
-	}
-
 	applyFilter(event: Event) {
 		const filterValue = (event.target as HTMLInputElement).value;
 		this.dataSource.filter = filterValue.trim().toLowerCase();
 	}
 
-	upload(): void {
-  	    this.progress = 0;
-  	    if (this.selectedFiles) {
-  	      const file: File | null = this.selectedFiles.item(0);
-  	      if (file) {
-  	        this.currentFile = file;
-  	        this.uploadService.upload(this.currentFile).subscribe({
-  	          next: (event: any) => {
-  	            if (event.type === HttpEventType.UploadProgress) {
-  	              this.progress = Math.round(100 * event.loaded / event.total);
-  	            } else if (event instanceof HttpResponse) {
-                  this.dataDisplayResponseType = event.body;
-                  if(this.dataDisplayResponseType.errorMessage){
-                    this.errorMessage = this.dataDisplayResponseType.errorMessage;
-                    this.reset();
-                  } else {
-                    this.dataSource = new MatTableDataSource(this.dataDisplayResponseType.dataDisplayResponse);
-                    this.dataSource.sort = this.sort;
-                    this.dataSource.paginator = this.paginator;
-                    this.reset();
-                  }
-  	            }
-  	          },
-  	          error: (err: any) => {
-  	            console.log(err);
-  	            this.progress = 0;
-  	            if (err.error && err.error.message) {
-  	              this.message = err.error.message;
-  	            } else {
-  	              this.message = 'Could not upload the file!';
-  	            }
-  	            this.currentFile = undefined;
-  	          }
-  	        });
-  	      }
-  	      this.selectedFiles = undefined;
-  	    }
-  	}
-
 	loadInstruments(): void {
-	    this.progress = 0;
-      this.uploadService.loadAllActiveInstruments().subscribe({
-        next: (event: any) => {
-          if (event.type === HttpEventType.UploadProgress) {
-            this.progress = Math.round(100 * event.loaded / event.total);
-          } else if (event instanceof HttpResponse) {
-            this.dataDisplayResponseType = event.body;
-            if(this.dataDisplayResponseType.errorMessage){
-              this.errorMessage = this.dataDisplayResponseType.errorMessage;
-              this.reset();
-            } else {
-              this.dataSource = new MatTableDataSource(this.dataDisplayResponseType.dataDisplayResponse);
-              this.dataSource.sort = this.sort;
-              this.dataSource.paginator = this.paginator;
-              this.reset();
-            }
-          }
-        },
-        error: (err: any) => {
-          console.log(err);
-          this.progress = 0;
-          if (err.error && err.error.message) {
-            this.message = err.error.message;
+    this.uploadService.loadAllActiveInstruments().subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          this.dataDisplayResponseType = event.body;
+          if(this.dataDisplayResponseType.errorMessage){
+            this.errorMessage = this.dataDisplayResponseType.errorMessage;
           } else {
-            this.message = 'Unable to load instruments !';
+            this.dataSource = new MatTableDataSource(this.dataDisplayResponseType.dataDisplayResponse);
           }
         }
-      });
+      },
+      error: (err: any) => {
+        console.log(err);
+        if (err.error && err.error.message) {
+          this.message = err.error.message;
+        } else {
+          this.message = 'Unable to load instruments !';
+        }
+      }
+    });
 	}
 
   onChange(event: MatTabChangeEvent) {
@@ -155,18 +101,6 @@ export class AppComponent {
       this.displayTab2 = true;
     }
   }
-
-	@ViewChild(MatPaginator, {static: false})
-	set paginator(value: MatPaginator) {
-		this.dataSource['paginator'] = value;
-	}
-
-	@ViewChild(MatSort, {static: false})
-	set sort(value: MatSort) {
-		this.dataSource['sort'] = value;
-	}
-
-
 }
 
 export class DataDisplayResponseType {
