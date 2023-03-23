@@ -64,7 +64,7 @@ export class AppComponent {
 		this.dataSource.filter = filterValue.trim().toLowerCase();
 	}
 
-	loadInstruments(): void {
+	private loadInstruments(): void {
     this.uploadService.loadAllActiveInstruments().subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
