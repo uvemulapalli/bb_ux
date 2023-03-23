@@ -35,7 +35,7 @@ export class AppComponent {
 
 	dataDisplayResponseType: DataDisplayResponseType = new DataDisplayResponseType();
 
-	displayedColumns: string[] = ['TradeId', 'Spot', 'Strike', 'timeToMaturity', 'IR', 'Sigma', 'OptionPrice', 'timeTaken'];
+	displayedColumns: string[] = ['ticker', 'spotPrice', 'strikePrice', 'expiry', 'volatility', 'optionPrice', 'predictedPrice', 'timeTaken'];
 
 	dataSource: any;
 
@@ -175,12 +175,12 @@ export class DataDisplayResponseType {
 }
 
 export class DataDisplayResponse {
-	TradeId: string = '';
-	Spot: string = '';
-	Strike: string = '';
-	timeToMaturity: string = '';
-	IR: string = '';
-	Sigma: string = '';
-	OptionPrice: string = '';
-	timeTaken: string = '';
+	ticker: string = '';
+	spotPrice: number = 0;
+	strikePrice: number = 0;
+	expiry: number = 0;
+	volatility: number = 0;
+	optionPrice: number = 0;
+	predictedPrice: number = 0;
+	timeTaken: number = 0;
 }

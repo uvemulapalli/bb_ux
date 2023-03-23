@@ -14,45 +14,45 @@
 </mat-tab-group>
 <div *ngIf="dataSource && displayTab1" class="tabularResult">
   <br>
-	<mat-form-field>Filter<mat-label></mat-label>
+	<mat-form-field>Search Instrument<mat-label></mat-label>
 		<input matInput (keyup)="applyFilter($event)" placeholder="" #input>
 	</mat-form-field>
 
 	<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-align">
 
-		<ng-container matColumnDef="TradeId">
-			<th mat-header-cell *matHeaderCellDef>Trade Id</th>
-			<td mat-cell *matCellDef="let element">{{element.tradeId}}</td>
+		<ng-container matColumnDef="ticker">
+			<th mat-header-cell *matHeaderCellDef>Ticker</th>
+			<td mat-cell *matCellDef="let element">{{element.ticker}}</td>
 		</ng-container>
 
-		<ng-container matColumnDef="Spot">
+		<ng-container matColumnDef="spotPrice">
 			<th mat-header-cell *matHeaderCellDef>Spot Price</th>
-			<td mat-cell *matCellDef="let element">{{element.spot}}</td>
+			<td mat-cell *matCellDef="let element">{{element.spotPrice}}</td>
 		</ng-container>
 
-		<ng-container matColumnDef="Strike">
+		<ng-container matColumnDef="strikePrice">
 			<th mat-header-cell *matHeaderCellDef>Strike Price</th>
-			<td mat-cell *matCellDef="let element">{{element.strike}}</td>
+			<td mat-cell *matCellDef="let element">{{element.strikePrice}}</td>
 		</ng-container>
 
-		<ng-container matColumnDef="timeToMaturity">
-			<th mat-header-cell *matHeaderCellDef>Time To Maturity</th>
-			<td mat-cell *matCellDef="let element">{{element.timeToMaturity}}</td>
+		<ng-container matColumnDef="expiry">
+			<th mat-header-cell *matHeaderCellDef>Expiry/ Time To Maturity</th>
+			<td mat-cell *matCellDef="let element">{{element.expiry}}</td>
 		</ng-container>
 
-		<ng-container matColumnDef="IR">
-			<th mat-header-cell *matHeaderCellDef>IR</th>
-			<td mat-cell *matCellDef="let element">{{element.ir}}</td>
+		<ng-container matColumnDef="volatility">
+			<th mat-header-cell *matHeaderCellDef>Volatility/ Sigma</th>
+			<td mat-cell *matCellDef="let element">{{element.volatility}}</td>
 		</ng-container>
 
-		<ng-container matColumnDef="Sigma">
-			<th mat-header-cell *matHeaderCellDef>Sigma</th>
-			<td mat-cell *matCellDef="let element">{{element.sigma}}</td>
-		</ng-container>
-
-		<ng-container matColumnDef="OptionPrice">
+		<ng-container matColumnDef="optionPrice">
 			<th mat-header-cell *matHeaderCellDef>Option Price</th>
 			<td mat-cell *matCellDef="let element">{{element.optionPrice}}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="predictedPrice">
+			<th mat-header-cell *matHeaderCellDef>Predicted Price</th>
+			<td mat-cell *matCellDef="let element">{{element.predictedPrice}}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="timeTaken">
