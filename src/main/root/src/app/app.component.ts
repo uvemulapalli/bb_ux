@@ -21,9 +21,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 	tab1Title = 'Simulation';
 
-	displayTab1 = true;
+	tab2Title = 'Graph';
 
-	tab2Title = 'Graph Report';
+	displayTab1 = true;
 
 	displayTab2 = false;
 

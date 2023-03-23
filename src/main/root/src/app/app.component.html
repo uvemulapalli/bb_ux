@@ -17,58 +17,14 @@
 	<mat-form-field>Search<mat-label></mat-label>
 		<input matInput (keyup)="applyFilter($event)" placeholder="" #input>
 	</mat-form-field>
-
-  <div class="example-container mat-elevation-z8">
-
-    <mat-table mat-table [dataSource]="dataSource" matSort>
-
-      <ng-container matColumnDef="ticker">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Ticker</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.ticker}}</mat-cell>
+  <div class="example-container">
+    <mat-table [dataSource]="dataSource" matSort>
+      <ng-container *ngFor="let col of displayedColumns" [matColumnDef]="col">
+        <mat-header-cell class="table-header header-p" *matHeaderCellDef><b>{{col}}</b></mat-header-cell>
+        <mat-cell class="table-content context-position" *matCellDef="let element">{{element[col]}}</mat-cell>
       </ng-container>
-
-      <ng-container matColumnDef="spotPrice">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Spot Price</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.spotPrice}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="strikePrice">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Strike Price</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.strikePrice}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="expiry">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Expiry/ Time To Maturity</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.expiry}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="volatility">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Volatility/ Sigma</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.volatility}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="optionPrice">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Option Price</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.optionPrice}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="predictedPrice">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Predicted Price</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.predictedPrice}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="timeTaken">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Time Taken</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.timeTaken}}</mat-cell>
-      </ng-container>
-
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-
-      <!-- Row shown when there is no matching data. -->
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-      </tr>
+      <mat-header-row class="table-header header-p-row" *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row matRipple [ngClass]="((row['num']%2) == 1) ? 'row-single' : 'row-double'" *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
   </div>
   <mat-paginator showFirstLastButtons [length]="dataSource.data?.length" [pageSize]="50" [pageSizeOptions]="[100, 500, 1000, 2000]" aria-label="Select page"></mat-paginator>
