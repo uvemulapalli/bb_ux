@@ -71,5 +71,5 @@
       </tr>
     </mat-table>
   </div>
-  <mat-paginator [length]="dataSource.length" [pageSize]="100" [pageSizeOptions]="[100, 500, 1000, 2000]" aria-label="Select page"></mat-paginator>
+  <mat-paginator [length]="dataSource.data?.length" [pageSize]="50" [pageSizeOptions]="[100, 500, 1000, 2000]" aria-label="Select page"></mat-paginator>
 </div>

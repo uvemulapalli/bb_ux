@@ -1,4 +1,4 @@
-import { Component, Injectable, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Injectable, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatFormField, MatFormFieldControl } from "@angular/material/form-field";
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -15,15 +15,15 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   encapsulation: ViewEncapsulation.None
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit, AfterViewInit {
 
 	title = 'Derivative Prices';
 
-	tab1Title = 'Tabular Report';
+	tab1Title = 'Simulation';
 
 	displayTab1 = true;
 
-	tab2Title = 'Graphical Report';
+	tab2Title = 'Graph Report';
 
 	displayTab2 = false;
 
@@ -32,6 +32,8 @@ export class AppComponent {
 	dataDisplayResponseType: DataDisplayResponseType = new DataDisplayResponseType();
 
 	displayedColumns: string[] = ['ticker', 'spotPrice', 'strikePrice', 'expiry', 'volatility', 'optionPrice', 'predictedPrice', 'timeTaken'];
+
+	//public dataSource = new MatTableDataSource<DataDisplayResponse>([], 100);
 
 	dataSource: any;
 
@@ -54,10 +56,17 @@ export class AppComponent {
 	}
 
 	constructor(private uploadService: FileUploadService) {
-      this.displayTab1 = true;
-      this.displayTab2 = false;
-      this.loadInstruments();
+    this.displayTab1 = true;
+    this.displayTab2 = false;
 	}
+
+  ngOnInit(): void {
+    this.loadInstruments();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
 
 	applyFilter(event: Event) {
 		const filterValue = (event.target as HTMLInputElement).value;
