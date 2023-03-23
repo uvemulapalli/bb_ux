@@ -14,6 +14,11 @@
   margin-right: 8px;
 }
 
+.mdc-tab--active {
+  background: gainsboro;
+  border-radius: 10px;
+}
+
 .inputcontainer {
 	border-radius: 25px;
 	border: 1px dotted gray;
