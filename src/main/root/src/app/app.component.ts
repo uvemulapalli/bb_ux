@@ -31,9 +31,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 	dataDisplayResponseType: DataDisplayResponseType = new DataDisplayResponseType();
 
-	displayedColumns: string[] = ['ticker', 'spotPrice', 'strikePrice', 'expiry', 'volatility', 'optionPrice', 'predictedPrice', 'timeTaken'];
-
-	//public dataSource = new MatTableDataSource<DataDisplayResponse>([], 100);
+	displayedColumns: string[] = [];
 
 	dataSource: any;
 
@@ -64,9 +62,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.loadInstruments();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-  }
+  ngAfterViewInit(): void { }
 
 	applyFilter(event: Event) {
 		const filterValue = (event.target as HTMLInputElement).value;
@@ -81,7 +77,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           if(this.dataDisplayResponseType.errorMessage){
             this.errorMessage = this.dataDisplayResponseType.errorMessage;
           } else {
-            this.dataSource = new MatTableDataSource(this.dataDisplayResponseType.dataDisplayResponse);
+            var response = this.dataDisplayResponseType.dataDisplayResponse;
+            this.dataSource = new MatTableDataSource(response);
+            this.displayedColumns = Object.keys(response[0]);
           }
         }
       },
