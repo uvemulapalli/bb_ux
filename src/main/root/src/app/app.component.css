@@ -62,7 +62,6 @@
 
 .tabularResult{
 	height: 300px;
-	margin-left: -150px;
 }
 
 .upload{
@@ -97,4 +96,12 @@
 .mat-table {
   overflow: auto;
   max-height: 500px;
+}
+
+.red-cell{
+	background-color: red !important;
+}
+
+.green-cell{
+	background-color: green !important;
 }
