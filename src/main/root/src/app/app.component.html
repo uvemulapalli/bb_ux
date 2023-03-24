@@ -26,6 +26,6 @@
       <mat-header-row class="table-header header-p-row" *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row matRipple [ngClass]="((row['num']%2) == 1) ? 'row-single' : 'row-double'" *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
-  </div>
-  <mat-paginator [length]="dataSource.data?.length" [pageSize]="50" [pageSizeOptions]="[100, 500, 1000, 2000]" aria-label="Select page" showFirstLastButtons></mat-paginator>
+  </div><br>
+  <mat-paginator [length]="dataSource.data?.length" [pageSize]="50" [pageSizeOptions]="[50, 100, 500, 1000, 2000]" aria-label="Select page" showFirstLastButtons></mat-paginator>
 </div>

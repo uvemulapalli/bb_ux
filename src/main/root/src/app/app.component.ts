@@ -7,6 +7,7 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: 'app-root',
