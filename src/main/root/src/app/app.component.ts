@@ -123,6 +123,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const tab = event.tab.textLabel;
     console.log(tab);
     if (tab === this.tab1Title) {
+      this.dataSource = undefined;
       this.displayTab1 = true;
       this.displayTab2 = false;
       this.loadInstruments();
@@ -138,7 +139,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     let randomGen = Math.random() * ((9) - (1) + 1);
     let incDecValue = Math.floor(randomGen);
     objectToModify.spotPrice = parseFloat((objectToModify.spotPrice + (incDecValue % 2 === 0 ? -randomGen : randomGen)).toFixed(5));
-    if(objectToModify.spotPrice < this.minSpotPrice) {
+    if(objectToModify.spotPrice < (this.minSpotPrice + 10) && objectToModify.spotPrice > (this.maxSpotPrice + 10)) {
       this.generateRandom(objectToModify);
     }
     return objectToModify;
@@ -171,5 +172,3 @@ export class AppComponent implements OnInit, AfterViewInit {
     row.predictedPrice = row.spotPrice;
   }
 }
-
-
