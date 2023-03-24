@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.example.bbux.response.DataDisplayResponse;
@@ -93,12 +94,15 @@ public class DataFormatterService {
 		}
 		return null;
 	}
+
+	@Value("classpath:instruments_1000.csv")
+	Resource resourceFile;
 	public List<DataDisplayResponse> loadAllActiveInstruments(){
 		try {
-			File inputFile = ResourceUtils.getFile("classpath:" + this.fileName);
+			File inputFile = this.resourceFile.getFile();
 			return getFormattedData(inputFile);
-		} catch (FileNotFoundException fileNotFoundException) {
-			logger.error("Unable to load CSV file from classpath.", fileNotFoundException);
+		} catch (IOException ioException) {
+			logger.error("Unable to load CSV file from classpath.", ioException);
 		}
 		return null;
 	}
