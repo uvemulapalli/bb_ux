@@ -21,4 +21,12 @@ export class FileUploadService {
 		});
 		return this.http.request(req);
 	}
+
+	loadAllActiveInstruments(): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', `${this.baseUrl}/loadAllActiveInstruments`, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.http.request(req);
+  }
 }
