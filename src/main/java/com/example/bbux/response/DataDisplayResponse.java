@@ -2,83 +2,83 @@ package com.example.bbux.response;
 
 public class DataDisplayResponse {
 	
-	private String TradeId;
+	private String ticker;
 	
-	private String Spot;
+	private Float spotPrice;
 	
-	private String Strike;
+	private Float strikePrice;
 	
-	private String timeToMaturity;
+	private Float expiry;
 	
-	private String IR;
-	
-	private String Sigma;
-	
-	private String OptionPrice;
-	
-	private String timeTaken;
+	private Float volatility;
 
-	public String getTradeId() {
-		return TradeId;
+	private Float optionPrice;
+
+	private Float predictedPrice;
+
+	private Float timeTaken;
+
+	public String getTicker() {
+		return ticker;
 	}
 
-	public void setTradeId(String tradeId) {
-		TradeId = tradeId;
+	public void setTicker(String ticker) {
+		this.ticker = ticker;
 	}
 
-	public String getSpot() {
-		return Spot;
+	public Float getSpotPrice() {
+		return spotPrice;
 	}
 
-	public void setSpot(String spot) {
-		Spot = spot;
+	public void setSpotPrice(Float spotPrice) {
+		this.spotPrice = spotPrice;
 	}
 
-	public String getStrike() {
-		return Strike;
+	public Float getStrikePrice() {
+		return strikePrice;
 	}
 
-	public void setStrike(String strike) {
-		Strike = strike;
+	public void setStrikePrice(Float strikePrice) {
+		this.strikePrice = strikePrice;
 	}
 
-	public String getTimeToMaturity() {
-		return timeToMaturity;
+	public Float getExpiry() {
+		return expiry;
 	}
 
-	public void setTimeToMaturity(String timeToMaturity) {
-		this.timeToMaturity = timeToMaturity;
+	public void setExpiry(Float expiry) {
+		this.expiry = expiry;
 	}
 
-	public String getIR() {
-		return IR;
+	public Float getVolatility() {
+		return volatility;
 	}
 
-	public void setIR(String iR) {
-		IR = iR;
+	public void setVolatility(Float volatility) {
+		this.volatility = volatility;
 	}
 
-	public String getSigma() {
-		return Sigma;
+	public Float getOptionPrice() {
+		return optionPrice;
 	}
 
-	public void setSigma(String sigma) {
-		Sigma = sigma;
+	public void setOptionPrice(Float optionPrice) {
+		this.optionPrice = optionPrice;
 	}
 
-	public String getOptionPrice() {
-		return OptionPrice;
+	public Float getPredictedPrice() {
+		return predictedPrice;
 	}
 
-	public void setOptionPrice(String optionPrice) {
-		OptionPrice = optionPrice;
+	public void setPredictedPrice(Float predictedPrice) {
+		this.predictedPrice = predictedPrice;
 	}
 
-	public String getTimeTaken() {
+	public Float getTimeTaken() {
 		return timeTaken;
 	}
 
-	public void setTimeTaken(String timeTaken) {
+	public void setTimeTaken(Float timeTaken) {
 		this.timeTaken = timeTaken;
 	}
 }
