@@ -59,8 +59,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   errorMessage: string = '';
 
-  minStrikePrice = 0.0;
-  maxStrikePrice = 0.0;
+  minSpotPrice = 0.0;
+  maxSpotPrice = 0.0;
 
   @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
     if (this.dataSource && !this.dataSource.sort) {
@@ -104,7 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               //element['cellHighlightColor'] = 'default-cell';
             });
             this.displayedColumns = Object.keys(response[0]);
-            this.findMinMaxStrikePrice();
+            this.findMinMaxSpotPrice();
           }
         }
       },
@@ -137,22 +137,25 @@ export class AppComponent implements OnInit, AfterViewInit {
   generateRandom(objectToModify: any) {
     let randomGen = Math.random() * ((9) - (1) + 1);
     let incDecValue = Math.floor(randomGen);
-    objectToModify.strikePrice = parseFloat((objectToModify.strikePrice + (incDecValue % 2 === 0 ? -randomGen : randomGen)).toFixed(5))
+    objectToModify.spotPrice = parseFloat((objectToModify.spotPrice + (incDecValue % 2 === 0 ? -randomGen : randomGen)).toFixed(5));
+    if(objectToModify.spotPrice < this.minSpotPrice) {
+      this.generateRandom(objectToModify);
+    }
     return objectToModify;
   }
 
-  findMinMaxStrikePrice() {
+  findMinMaxSpotPrice() {
     if (this.dataSource.data.length) {
-      this.minStrikePrice = Math.min(...this.dataSource.data.map((item: any) => parseFloat(item.strikePrice)));
-      this.maxStrikePrice = Math.max(...this.dataSource.data.map((item: any) => parseFloat(item.strikePrice)));
-      console.log(" Min: " + this.minStrikePrice);
-      console.log(" Max: " + this.maxStrikePrice);
+      this.minSpotPrice = Math.min(...this.dataSource.data.map((item: any) => parseFloat(item.spotPrice)));
+      this.maxSpotPrice = Math.max(...this.dataSource.data.map((item: any) => parseFloat(item.spotPrice)));
+      console.log(" Min: " + this.minSpotPrice);
+      console.log(" Max: " + this.maxSpotPrice);
       this.dataSource.data.forEach((record: any) => {
-        let oldValue = record.strikePrice;
+        let oldValue = record.spotPrice;
         setInterval(() => {
           record = this.generateRandom(record);
           this.handleHighlight(record, oldValue);
-        }, 3000);
+        }, 10000);
       });
     }
   }
@@ -160,14 +163,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   handleHighlight(row: any, thresholdValue: any) {
     let redColor = 'red-cell';
     let greenColor = 'green-cell';
-    if (row.strikePrice < thresholdValue) {
+    if (row.spotPrice < thresholdValue) {
       row['cellHighlightColor'] = redColor;
     } else {
       row['cellHighlightColor'] = greenColor;
     }
-    row.predictedPrice = row.strikePrice;
+    row.predictedPrice = row.spotPrice;
   }
-
 }
 
 

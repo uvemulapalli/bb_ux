@@ -97,6 +97,7 @@ public class DataFormatterService {
 
 	@Value("classpath:instruments_1000.csv")
 	Resource resourceFile;
+
 	public List<DataDisplayResponse> loadAllActiveInstruments(){
 		try {
 			File inputFile = this.resourceFile.getFile();
