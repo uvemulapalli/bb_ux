@@ -101,7 +101,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             var response = this.dataDisplayResponseType.dataDisplayResponse;
             this.dataSource = new MatTableDataSource(response);
             this.dataSource.data.forEach((element: any) => {
-              element['cellHighlightColor'] = 'default-cell';
+              //element['cellHighlightColor'] = 'default-cell';
             });
             this.displayedColumns = Object.keys(response[0]);
             this.findMinMaxStrikePrice();
