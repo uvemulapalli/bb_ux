@@ -139,7 +139,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     let randomGen = Math.random() * ((9) - (1) + 1);
     let incDecValue = Math.floor(randomGen);
     objectToModify.spotPrice = parseFloat((objectToModify.spotPrice + (incDecValue % 2 === 0 ? -randomGen : randomGen)).toFixed(5));
-    if(objectToModify.spotPrice < (this.minSpotPrice + 10) && objectToModify.spotPrice > (this.maxSpotPrice + 10)) {
+    if(objectToModify.spotPrice < (this.minSpotPrice + 10) || objectToModify.spotPrice > (this.maxSpotPrice + 10)) {
       this.generateRandom(objectToModify);
     }
     return objectToModify;
