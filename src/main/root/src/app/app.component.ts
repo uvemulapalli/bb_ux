@@ -17,9 +17,10 @@ export class DataDisplayResponseType {
 
 export class DataDisplayResponse {
   ticker: string = '';
+  contractSymbol: string = '';
   spotPrice: number = 0;
   strikePrice: number = 0;
-  expiry: number = 0;
+  expirationDate: string = '';
   volatility: number = 0;
   optionPrice: number = 0;
   predictedPrice: number = 0;
@@ -101,7 +102,9 @@ export class AppComponent implements OnInit, AfterViewInit {
             var response = this.dataDisplayResponseType.dataDisplayResponse;
             this.dataSource = new MatTableDataSource(response);
             this.dataSource.data.forEach((element: any) => {
-              //element['cellHighlightColor'] = 'default-cell';
+              if(element.expirationDate === 'expirationDate') {
+                element['expirationDate'] = new Date(element.expirationDate);
+              }
             });
             this.displayedColumns = Object.keys(response[0]);
             this.findMinMaxSpotPrice();
