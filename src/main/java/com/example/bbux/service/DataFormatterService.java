@@ -5,15 +5,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.example.bbux.repository.Options;
+import com.example.bbux.repository.OptionsRepository;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,15 @@ import org.springframework.util.ResourceUtils;
 public class DataFormatterService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DataFormatterService.class);
+
+	@Autowired
+	private OptionsRepository optionsRepository;
+
+	@Autowired
+	private ModelMapper modelMapper;
+
+	@Value("classpath:instruments_actual.csv")
+	Resource resourceFile;
 
 	@Value("#{'${file.headers}'.split(',')}")
 	private List<String> headerData;
@@ -95,10 +105,8 @@ public class DataFormatterService {
 		return null;
 	}
 
-	@Value("classpath:instruments_actual.csv")
-	Resource resourceFile;
-
 	public List<DataDisplayResponse> loadAllActiveInstruments(){
+		logger.info("Loading instruments from CSV file.");
 		try {
 			File inputFile = this.resourceFile.getFile();
 			return getFormattedData(inputFile);
@@ -106,5 +114,19 @@ public class DataFormatterService {
 			logger.error("Unable to load CSV file from classpath.", ioException);
 		}
 		return null;
+	}
+
+	public List<DataDisplayResponse> loadAllActiveInstrumentsFromStore(){
+		List<DataDisplayResponse> dataDisplayResponses = new ArrayList<>();
+		try {
+			List<Options> optionsList = this.optionsRepository.findAll();
+			for(Options option : optionsList) {
+				DataDisplayResponse dataDisplayResponse = this.modelMapper.map(option, DataDisplayResponse.class);
+				dataDisplayResponses.add(dataDisplayResponse);
+			}
+		} catch (Exception exception) {
+			logger.error("Unable to load instrument data from mongo data store - {}", exception);
+		}
+		return dataDisplayResponses;
 	}
 }

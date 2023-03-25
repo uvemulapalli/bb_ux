@@ -40,10 +40,13 @@ public class DataDisplayController {
 	@PostMapping(path = "/loadAllActiveInstruments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<DataDisplayResponseType> loadAllActiveInstruments() {
 		DataDisplayResponseType dataDisplayResponseType = new DataDisplayResponseType();
-		List<DataDisplayResponse> dataDisplayResponses = this.dataFormatterService.loadAllActiveInstruments();
-		if(null == dataDisplayResponses || dataDisplayResponses.isEmpty()) {
+		List<DataDisplayResponse> dataDisplayResponses = this.dataFormatterService.loadAllActiveInstrumentsFromStore();
+		if(dataDisplayResponses.isEmpty()) {
+			dataDisplayResponses = this.dataFormatterService.loadAllActiveInstruments();
+		}
+		if(dataDisplayResponses.isEmpty()) {
 			dataDisplayResponseType.setErrorMessage("Unable to load instruments");
-			return new ResponseEntity<DataDisplayResponseType>(dataDisplayResponseType, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<DataDisplayResponseType>(dataDisplayResponseType, HttpStatus.NO_CONTENT);
 		} else {
 			dataDisplayResponseType.setDataDisplayResponse(dataDisplayResponses);
 			return new ResponseEntity<DataDisplayResponseType>(dataDisplayResponseType, HttpStatus.OK);
