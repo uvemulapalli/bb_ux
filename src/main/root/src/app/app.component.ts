@@ -1,14 +1,10 @@
-import { Component, OnInit, AfterViewInit, Injectable, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { MatFormField, MatFormFieldControl } from "@angular/material/form-field";
-import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Observable, of, min, max } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { FileUploadService } from 'src/app/services/file-upload.service';
+import { HttpResponse } from '@angular/common/http';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { MatButtonModule } from "@angular/material/button";
+import { FileUploadService } from 'src/app/services/file-upload.service';
 
 export class DataDisplayResponseType {
   errorMessage: string = '';
@@ -102,7 +98,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             var response = this.dataDisplayResponseType.dataDisplayResponse;
             this.dataSource = new MatTableDataSource(response);
             this.dataSource.data.forEach((element: any) => {
-              if(element.expirationDate === 'expirationDate') {
+              if (element.expirationDate === 'expirationDate') {
                 element['expirationDate'] = new Date(element.expirationDate);
               }
             });
@@ -152,23 +148,23 @@ export class AppComponent implements OnInit, AfterViewInit {
       console.log(" Min: " + this.minSpotPrice);
       console.log(" Max: " + this.maxSpotPrice);
       this.dataSource.data.forEach((record: any) => {
-        let oldValue = record.spotPrice;
+        record['baseValue'] = record.spotPrice;
         setInterval(() => {
           record = this.generateRandom(record);
-          this.handleHighlight(record, oldValue);
         }, 10000);
       });
     }
   }
 
-  handleHighlight(row: any, thresholdValue: any) {
-    let redColor = 'red-cell';
-    let greenColor = 'green-cell';
-    if (row.spotPrice < thresholdValue) {
-      row['cellHighlightColor'] = redColor;
-    } else {
-      row['cellHighlightColor'] = greenColor;
+  getStyle(element: any, colName: any) {
+    if (colName === 'spotPrice') {
+      element.predictedPrice = element.spotPrice;
+      if (element.spotPrice < element.baseValue) {
+        return '#FF6347';
+      } else if (element.spotPrice > element.baseValue) {
+        return '#90EE90';
+      }
     }
-    row.predictedPrice = row.spotPrice;
+    return '';
   }
 }

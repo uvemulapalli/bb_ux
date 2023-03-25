@@ -21,10 +21,11 @@
     <mat-table [dataSource]="dataSource" matSort>
       <ng-container *ngFor="let col of displayedColumns" [matColumnDef]="col">
         <mat-header-cell class="table-header header-p" *matHeaderCellDef mat-sort-header><b>{{col}}</b></mat-header-cell>
-        <mat-cell class="table-content context-position" *matCellDef="let element">{{element[col]}}</mat-cell>
+        <mat-cell class="table-content context-position" [ngStyle]="{'background-color': getStyle(element, col)}" 
+           *matCellDef="let element">{{element[col]}}</mat-cell>
       </ng-container>
       <mat-header-row class="table-header header-p-row" *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row matRipple class="{{row.cellHighlightColor}}" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row matRipple *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
   </div><br>
   <mat-paginator [length]="dataSource.data?.length" [pageSize]="50" [pageSizeOptions]="[50, 100, 500, 1000, 2000]"
