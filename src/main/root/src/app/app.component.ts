@@ -168,6 +168,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       console.log(" Max: " + this.maxSpotPrice);
       /* this.dataSource.data.forEach((record: any) => {
         record['baseValue'] = record.spotPrice;
+        record['valid'] = 0;
         setInterval(() => { record = this.generateRandom(record); }, 10000);
       }); */
       var tempList = this.dataSource.data;
@@ -175,61 +176,21 @@ export class AppComponent implements OnInit, AfterViewInit {
       let selected = shuffledList.slice(0, 10);
       selected.forEach((record: any) => {
         record['baseValue'] = record.spotPrice;
+        record['valid'] = 0;
         setInterval(() => { record = this.generateRandom(record); }, 10000);
       });
     }
   }
 
   getBackgroundColor(element: any, colName: any) {
-    if (colName === 'spotPrice') {
-      //element.predictedPrice = element.spotPrice;
-      this.sendPricingRequest(element.contractSymbol, element.spotPrice);
-      if (element.spotPrice < element.baseValue) {
-        return '#FF6347';
-      } else if (element.spotPrice > element.baseValue) {
-        return '#90EE90';
-      }
+    element.predictedPrice = element.spotPrice;
+    if (element.spotPrice < element.baseValue) {
+      element['valid'] = -1;
+      return '#FF6347';
+    } else if (element.spotPrice > element.baseValue) {
+      element['valid'] = 1;
+      return '#90EE90';
     }
     return '';
-  }
-
-  getBorderRadius(element: any, colName: any) {
-    if (colName === 'spotPrice') {
-      return '5px';
-    }
-    return '';
-  }
-
-  private sendPricingRequest(instrumentId: string, spotprice: number): void {
-    var requestBody = [{ "instrumentId": instrumentId, "spotprice": spotprice }];
-    // this.uploadService.sendPricingRequest(requestBody).subscribe({
-    this.uploadService.sendPricingRequestFromJson().subscribe({
-      next: (event: any) => {
-        if (event instanceof HttpResponse) {
-          this.pricingResponseType = event.body;
-          this.handlePricingResponse(this.pricingResponseType);
-        }
-      },
-      error: (err: any) => {
-        console.log(err);
-      }
-    });
-  }
-  private handlePricingResponse(pricingResponseType: any) {
-    var responses = this.pricingResponseType.data;
-    if (responses) {
-      var response = responses[0];
-      if (response) {
-        var pricingValues = response.values;
-        if (pricingValues) {
-          var predictedPrice = pricingValues[0].predictedPrice;
-          let elementIndex = this.dataSource.data.findIndex((element: any) => { element.contractSymbol == response.instrumentId });
-          let elementToBeModified = this.dataSource.data[elementIndex];
-          elementToBeModified.predictedPrice = predictedPrice;
-          elementToBeModified.timeTaken = response.predictionTime;
-          this.dataSource.data[elementIndex] = elementToBeModified;
-        }
-      }
-    }
   }
 }
