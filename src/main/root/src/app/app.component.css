@@ -1,3 +1,7 @@
+body {
+  max-width: 1500px;
+}
+
 .spatitle {
 	justify-content: center;
 	margin-left: 33%;
