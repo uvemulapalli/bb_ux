@@ -6,13 +6,13 @@ public class DataDisplayResponse {
 
 	private String contractSymbol;
 	
-	private Float spotPrice;
-	
 	private Float strikePrice;
 	
 	private String expirationDate;
 	
 	private Float volatility;
+
+	private Float spotPrice;
 
 	private Float optionPrice;
 
