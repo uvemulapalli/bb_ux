@@ -195,39 +195,40 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   getBorderRadius(element: any, colName: any) {
     if (colName === 'spotPrice') {
-     return '5px';
+      return '5px';
     }
     return '';
   }
 
-  private sendPricingRequest (instrumentId: string, spotprice: number): void {
-    var requestBody = [{"instrumentId" : instrumentId, "spotprice": spotprice}];
+  private sendPricingRequest(instrumentId: string, spotprice: number): void {
+    var requestBody = [{ "instrumentId": instrumentId, "spotprice": spotprice }];
     // this.uploadService.sendPricingRequest(requestBody).subscribe({
     this.uploadService.sendPricingRequestFromJson().subscribe({
-     next: (event: any) => {
-       if (event instanceof HttpResponse) {
-         this.pricingResponseType = event.body;
-         this.handlePricingResponse(this.pricingResponseType);
-       }
-     },
-     error: (err: any) => {
-       console.log(err);
-     }
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          this.pricingResponseType = event.body;
+          this.handlePricingResponse(this.pricingResponseType);
+        }
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
     });
   }
   private handlePricingResponse(pricingResponseType: any) {
     var responses = this.pricingResponseType.data;
-    if(responses) {
+    if (responses) {
       var response = responses[0];
-      if(response) {
+      if (response) {
         var pricingValues = response.values;
-        if(pricingValues) {
+        if (pricingValues) {
           var predictedPrice = pricingValues[0].predictedPrice;
-          let elementIndex = this.dataSource.data.findIndex(element => {element.contractSymbol == response.instrumentId});
+          let elementIndex = this.dataSource.data.findIndex((element: any) => { element.contractSymbol == response.instrumentId });
           let elementToBeModified = this.dataSource.data[elementIndex];
           elementToBeModified.predictedPrice = predictedPrice;
           elementToBeModified.timeTaken = response.predictionTime;
           this.dataSource.data[elementIndex] = elementToBeModified;
+        }
       }
     }
   }
