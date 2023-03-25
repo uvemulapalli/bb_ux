@@ -1,0 +1,24 @@
+{
+    "data": [
+        {
+            "instrumentId": "AAPL230915C00150000",
+            "predictionTime": 0,
+            "totalTime": 0,
+            "trainingTime": 0,
+            "values": {}
+        },
+        {
+            "instrumentId": "AAPL230414C00050000",
+            "predictionTime": 0.0010006427764892578,
+            "totalTime": 0.0010006427764892578,
+            "trainingTime": 0,
+            "values": [
+                {
+                    "delta": 0.13677489663160977,
+                    "predictedPrice": 0.5882898186564727,
+                    "spotPrice": 1.65
+                }
+            ]
+        }
+    ]
+}

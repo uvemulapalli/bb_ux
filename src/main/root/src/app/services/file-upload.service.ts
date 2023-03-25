@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,25 +8,30 @@ import { Observable } from 'rxjs';
 
 export class FileUploadService {
 
-	private baseUrl = 'http://localhost:5080';
+	private baseUrlForInitInstruments = 'http://localhost:5080';
 
-	constructor(private http: HttpClient) {}
+	private baseUrlForInstrumentPricing = 'http://a8216942521c.mylabserver.com:8090';
 
-	upload(file: File): Observable<HttpEvent<any>> {
-		const formData: FormData = new FormData();
-		formData.append('file', file);
-		const req = new HttpRequest('POST', `${this.baseUrl}/uploadFile`, formData, {
-			reportProgress: true,
-			responseType: 'json'
-		});
-		return this.http.request(req);
-	}
+	constructor(private httpClient: HttpClient) {}
 
 	loadAllActiveInstruments(): Observable<HttpEvent<any>> {
-    const req = new HttpRequest('POST', `${this.baseUrl}/loadAllActiveInstruments`, {
+    const req = new HttpRequest('POST', `${this.baseUrlForInitInstruments}/loadAllActiveInstruments`, {
       reportProgress: true,
       responseType: 'json'
     });
-    return this.http.request(req);
+    return this.httpClient.request(req);
+  }
+
+	sendPricingRequest(requestBody: any): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', `${this.baseUrlForInstrumentPricing}/model/price/instruments`, requestBody, {
+      headers : new HttpHeaders({"Content-Type": "application/json"}),
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.httpClient.request(req);
+  }
+
+	sendPricingRequestFromJson() {
+    return this.httpClient.get("assets/pricingResponse.json");
   }
 }
