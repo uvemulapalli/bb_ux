@@ -17,15 +17,9 @@ body {
 }
 
 .spatitle {
-	justify-content: center;
-	margin-left: 33%;
-	margin-top: -15px;
-}
-
-.titlehr {
-	margin-left: 30%;
-	margin-top: -8px;
-	width: 415px;
+    text-align: center;
+    text-decoration: underline;
+    margin-top: -15px;
 }
 
 .example-tab-icon {
@@ -95,6 +89,8 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 300px;
+  max-height: 400px;
+  overflow: scroll;
 }
 
 .example-header {
@@ -118,4 +114,13 @@ body {
 
 mat-header-cell, mat-cell {
  justify-content: center;
+}
+
+.cdk-overlay-pane{
+	background-color: lightgrey;
+    position: absolute;
+}
+
+.mat-column-spotPrice{
+	height: 10px;
 }
