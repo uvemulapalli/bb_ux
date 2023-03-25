@@ -156,7 +156,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getStyle(element: any, colName: any) {
+  getBackgroundColor(element: any, colName: any) {
     if (colName === 'spotPrice') {
       element.predictedPrice = element.spotPrice;
       if (element.spotPrice < element.baseValue) {
@@ -167,4 +167,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     return '';
   }
+
+  getBorderRadius(element: any, colName: any) {
+    if (colName === 'spotPrice') {
+     return '5px';
+    }
+    return '';
+ }
 }

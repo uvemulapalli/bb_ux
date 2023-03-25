@@ -74,8 +74,8 @@ body {
 
 .alert {
 	margin-top: -3px;
-    height: 35px;
-    color: red;
+  height: 35px;
+  color: red;
 }
 
 .tabularResult{
@@ -116,10 +116,6 @@ body {
   max-height: 500px;
 }
 
-.red-cell{
-	background-color: #FF6347 !important;
-}
-
-.green-cell{
-	background-color: #90EE90 !important;
+mat-header-cell, mat-cell {
+ justify-content: center;
 }
