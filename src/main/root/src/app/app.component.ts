@@ -149,6 +149,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       console.log(" Max: " + this.maxSpotPrice);
       this.dataSource.data.forEach((record: any) => {
         record['baseValue'] = record.spotPrice;
+        record['valid'] = 0;
         setInterval(() => {
           record = this.generateRandom(record);
         }, 10000);
@@ -157,21 +158,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   getBackgroundColor(element: any, colName: any) {
-    if (colName === 'spotPrice') {
-      element.predictedPrice = element.spotPrice;
-      if (element.spotPrice < element.baseValue) {
-        return '#FF6347';
-      } else if (element.spotPrice > element.baseValue) {
-        return '#90EE90';
-      }
+    element.predictedPrice = element.spotPrice;
+    if (element.spotPrice < element.baseValue) {
+      element['valid'] = -1;
+      return '#FF6347';
+    } else if (element.spotPrice > element.baseValue) {
+      element['valid'] = 1;
+      return '#90EE90';
     }
     return '';
   }
-
-  getBorderRadius(element: any, colName: any) {
-    if (colName === 'spotPrice') {
-     return '5px';
-    }
-    return '';
- }
 }

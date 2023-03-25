@@ -3,23 +3,24 @@ body {
 }
 
 .mat-column-ticker {
-    flex: 0 0 3% !important;
-    min-width: 80px !important;
+  flex: 0 0 3% !important;
+  min-width: 80px !important;
 }
 
 .mat-column-contractSymbol {
-    flex: 0 0 18% !important;
-    min-width: 104px !important;
+  flex: 0 0 18% !important;
+  min-width: 104px !important;
 }
+
 .mat-column-expirationDate {
-    flex: 0 0 11% !important;
-    min-width: 90px !important;
+  flex: 0 0 11% !important;
+  min-width: 90px !important;
 }
 
 .spatitle {
-    text-align: center;
-    text-decoration: underline;
-    margin-top: -15px;
+  text-align: center;
+  text-decoration: underline;
+  margin-top: -15px;
 }
 
 .example-tab-icon {
@@ -32,34 +33,34 @@ body {
 }
 
 .inputcontainer {
-	border-radius: 25px;
-	border: 1px dotted gray;
-	width: 100%;
-	height: 120px;
+  border-radius: 25px;
+  border: 1px dotted gray;
+  width: 100%;
+  height: 120px;
 }
 
 .v1 {
-	border-left: 2px dotted gray;
-	height: 100px;
-	position: absolute;
-	left: 45%;
-	top: 90px;
+  border-left: 2px dotted gray;
+  height: 100px;
+  position: absolute;
+  left: 45%;
+  top: 90px;
 }
 
 .dynamicdatagenerator {
-	margin-left: 65px;
-	display: inline-block;
+  margin-left: 65px;
+  display: inline-block;
 }
 
 .conditional {
-	text-align: left;
-	margin-left: -18px;
-	margin-top: 50px;
+  text-align: left;
+  margin-left: -18px;
+  margin-top: 50px;
 }
 
 .staticdatagenerator {
-	margin-top: -80px;
-	margin-left: 65px;
+  margin-top: -80px;
+  margin-left: 65px;
 }
 
 .file-input {
@@ -67,29 +68,29 @@ body {
 }
 
 .alert {
-	margin-top: -3px;
+  margin-top: -3px;
   height: 35px;
   color: red;
 }
 
-.tabularResult{
-	height: 300px;
+.tabularResult {
+  height: 300px;
 }
 
-.upload{
-	margin-top: 0;
-	margin-left: 20px;
+.upload {
+  margin-top: 0;
+  margin-left: 20px;
 }
 
-.table-align{
-	margin-left: -20px;
+.table-align {
+  margin-left: -20px;
 }
 
 .example-container {
   display: flex;
   flex-direction: column;
   min-width: 300px;
-  max-height: 400px;
+  max-height: 450px;
   overflow: scroll;
 }
 
@@ -112,15 +113,17 @@ body {
   max-height: 500px;
 }
 
-mat-header-cell, mat-cell {
- justify-content: center;
+mat-header-cell,
+mat-cell {
+  justify-content: center;
 }
 
-.cdk-overlay-pane{
-	background-color: lightgrey;
-    position: absolute;
+.cdk-overlay-pane {
+  background-color: lightgrey;
+  position: absolute;
 }
 
-.mat-column-spotPrice{
-	height: 10px;
+.mat-column-spotPrice {
+  flex: 0 0 12% !important;
+  min-width: 104px !important;
 }
