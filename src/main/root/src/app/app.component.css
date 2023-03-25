@@ -1,3 +1,21 @@
+body {
+  max-width: 1500px;
+}
+
+.mat-column-ticker {
+    flex: 0 0 3% !important;
+    min-width: 80px !important;
+}
+
+.mat-column-contractSymbol {
+    flex: 0 0 18% !important;
+    min-width: 104px !important;
+}
+.mat-column-expirationDate {
+    flex: 0 0 11% !important;
+    min-width: 90px !important;
+}
+
 .spatitle {
 	justify-content: center;
 	margin-left: 33%;
@@ -5,7 +23,7 @@
 }
 
 .titlehr {
-	margin-left: 28%;
+	margin-left: 30%;
 	margin-top: -8px;
 	width: 415px;
 }
@@ -56,8 +74,8 @@
 
 .alert {
 	margin-top: -3px;
-    height: 35px;
-    color: red;
+  height: 35px;
+  color: red;
 }
 
 .tabularResult{
@@ -98,10 +116,6 @@
   max-height: 500px;
 }
 
-.red-cell{
-	background-color: #FF6347 !important;
-}
-
-.green-cell{
-	background-color: #90EE90 !important;
+mat-header-cell, mat-cell {
+ justify-content: center;
 }

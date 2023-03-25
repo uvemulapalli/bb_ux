@@ -3,12 +3,14 @@ package com.example.bbux.response;
 public class DataDisplayResponse {
 	
 	private String ticker;
+
+	private String contractSymbol;
 	
 	private Float spotPrice;
 	
 	private Float strikePrice;
 	
-	private Float expiry;
+	private String expirationDate;
 	
 	private Float volatility;
 
@@ -24,6 +26,14 @@ public class DataDisplayResponse {
 
 	public void setTicker(String ticker) {
 		this.ticker = ticker;
+	}
+
+	public String getContractSymbol() {
+		return contractSymbol;
+	}
+
+	public void setContractSymbol(String contractSymbol) {
+		this.contractSymbol = contractSymbol;
 	}
 
 	public Float getSpotPrice() {
@@ -42,12 +52,12 @@ public class DataDisplayResponse {
 		this.strikePrice = strikePrice;
 	}
 
-	public Float getExpiry() {
-		return expiry;
+	public String getExpirationDate() {
+		return expirationDate;
 	}
 
-	public void setExpiry(Float expiry) {
-		this.expiry = expiry;
+	public void setExpirationDate(String expirationDate) {
+		this.expirationDate = expirationDate;
 	}
 
 	public Float getVolatility() {

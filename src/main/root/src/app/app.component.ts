@@ -1,14 +1,10 @@
-import { Component, OnInit, AfterViewInit, Injectable, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { MatFormField, MatFormFieldControl } from "@angular/material/form-field";
-import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Observable, of, min, max } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { FileUploadService } from 'src/app/services/file-upload.service';
+import { HttpResponse } from '@angular/common/http';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { MatButtonModule } from "@angular/material/button";
+import { FileUploadService } from 'src/app/services/file-upload.service';
 
 export class DataDisplayResponseType {
   errorMessage: string = '';
@@ -17,9 +13,10 @@ export class DataDisplayResponseType {
 
 export class DataDisplayResponse {
   ticker: string = '';
+  contractSymbol: string = '';
   spotPrice: number = 0;
   strikePrice: number = 0;
-  expiry: number = 0;
+  expirationDate: string = '';
   volatility: number = 0;
   optionPrice: number = 0;
   predictedPrice: number = 0;
@@ -59,8 +56,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   errorMessage: string = '';
 
-  minStrikePrice = 0.0;
-  maxStrikePrice = 0.0;
+  minSpotPrice = 0.0;
+  maxSpotPrice = 0.0;
 
   @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
     if (this.dataSource && !this.dataSource.sort) {
@@ -101,10 +98,12 @@ export class AppComponent implements OnInit, AfterViewInit {
             var response = this.dataDisplayResponseType.dataDisplayResponse;
             this.dataSource = new MatTableDataSource(response);
             this.dataSource.data.forEach((element: any) => {
-              //element['cellHighlightColor'] = 'default-cell';
+              if (element.expirationDate === 'expirationDate') {
+                element['expirationDate'] = new Date(element.expirationDate);
+              }
             });
             this.displayedColumns = Object.keys(response[0]);
-            this.findMinMaxStrikePrice();
+            this.findMinMaxSpotPrice();
           }
         }
       },
@@ -123,6 +122,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const tab = event.tab.textLabel;
     console.log(tab);
     if (tab === this.tab1Title) {
+      this.dataSource = undefined;
       this.displayTab1 = true;
       this.displayTab2 = false;
       this.loadInstruments();
@@ -137,37 +137,41 @@ export class AppComponent implements OnInit, AfterViewInit {
   generateRandom(objectToModify: any) {
     let randomGen = Math.random() * ((9) - (1) + 1);
     let incDecValue = Math.floor(randomGen);
-    objectToModify.strikePrice = parseFloat((objectToModify.strikePrice + (incDecValue % 2 === 0 ? -randomGen : randomGen)).toFixed(5))
+    objectToModify.spotPrice = parseFloat((objectToModify.spotPrice + (incDecValue % 2 === 0 ? -randomGen : randomGen)).toFixed(5));
     return objectToModify;
   }
 
-  findMinMaxStrikePrice() {
+  findMinMaxSpotPrice() {
     if (this.dataSource.data.length) {
-      this.minStrikePrice = Math.min(...this.dataSource.data.map((item: any) => parseFloat(item.strikePrice)));
-      this.maxStrikePrice = Math.max(...this.dataSource.data.map((item: any) => parseFloat(item.strikePrice)));
-      console.log(" Min: " + this.minStrikePrice);
-      console.log(" Max: " + this.maxStrikePrice);
+      this.minSpotPrice = Math.min(...this.dataSource.data.map((item: any) => parseFloat(item.spotPrice)));
+      this.maxSpotPrice = Math.max(...this.dataSource.data.map((item: any) => parseFloat(item.spotPrice)));
+      console.log(" Min: " + this.minSpotPrice);
+      console.log(" Max: " + this.maxSpotPrice);
       this.dataSource.data.forEach((record: any) => {
-        let oldValue = record.strikePrice;
+        record['baseValue'] = record.spotPrice;
         setInterval(() => {
           record = this.generateRandom(record);
-          this.handleHighlight(record, oldValue);
-        }, 3000);
+        }, 10000);
       });
     }
   }
 
-  handleHighlight(row: any, thresholdValue: any) {
-    let redColor = 'red-cell';
-    let greenColor = 'green-cell';
-    if (row.strikePrice < thresholdValue) {
-      row['cellHighlightColor'] = redColor;
-    } else {
-      row['cellHighlightColor'] = greenColor;
+  getBackgroundColor(element: any, colName: any) {
+    if (colName === 'spotPrice') {
+      element.predictedPrice = element.spotPrice;
+      if (element.spotPrice < element.baseValue) {
+        return '#FF6347';
+      } else if (element.spotPrice > element.baseValue) {
+        return '#90EE90';
+      }
     }
-    row.predictedPrice = row.strikePrice;
+    return '';
   }
 
+  getBorderRadius(element: any, colName: any) {
+    if (colName === 'spotPrice') {
+     return '5px';
+    }
+    return '';
+ }
 }
-
-

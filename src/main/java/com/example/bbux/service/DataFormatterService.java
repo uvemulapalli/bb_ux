@@ -63,7 +63,7 @@ public class DataFormatterService {
 	private HeaderColumnNameTranslateMappingStrategy<DataDisplayResponse> mapHeaders(final String[] headersFromCSV) {
 		if (headersFromCSV.length != this.headerData.size()) {
 			logger.error(
-					"Headers froom CSV file & Configuration didn't matched. Header from CSV {}, Headers from configuration {}",
+					"Headers from CSV file & Configuration didn't matched. Header from CSV {}, Headers from configuration {}",
 					ArrayUtils.toString(headersFromCSV), StringUtils.join(this.headerData, ","));
 		}
 
@@ -95,8 +95,9 @@ public class DataFormatterService {
 		return null;
 	}
 
-	@Value("classpath:instruments_1000.csv")
+	@Value("classpath:instruments_actual.csv")
 	Resource resourceFile;
+
 	public List<DataDisplayResponse> loadAllActiveInstruments(){
 		try {
 			File inputFile = this.resourceFile.getFile();
