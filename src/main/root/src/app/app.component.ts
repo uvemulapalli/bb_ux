@@ -312,6 +312,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.expirationDate = '03-26-2023';
     this.volatility = 0.28;
     this.isContractSaved = true;
+    this.form.controls['ticker'].disable();
+    this.form.controls['contractId'].disable();
   }
 
   public reset() {
