@@ -10,6 +10,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -25,9 +27,10 @@ import { MatIconModule } from '@angular/material/icon';
     HttpClientModule,
     MatTabsModule,
     BrowserAnimationsModule,
-    MatIconModule
+    MatIconModule,
+    MatSlideToggleModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

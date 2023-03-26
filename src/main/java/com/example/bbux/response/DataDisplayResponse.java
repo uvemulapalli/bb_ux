@@ -14,7 +14,7 @@ public class DataDisplayResponse {
 
 	private Double spotPrice;
 
-	private Double optionPrice;
+	// private Double optionPrice;
 
 	private Double predictedPrice;
 
@@ -68,13 +68,13 @@ public class DataDisplayResponse {
 		this.spotPrice = spotPrice;
 	}
 
-	public Double getOptionPrice() {
+	/*public Double getOptionPrice() {
 		return optionPrice;
 	}
 
 	public void setOptionPrice(Double optionPrice) {
 		this.optionPrice = optionPrice;
-	}
+	}*/
 
 	public Double getPredictedPrice() {
 		return predictedPrice;

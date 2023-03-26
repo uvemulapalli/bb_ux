@@ -10,7 +10,7 @@ export class FileUploadService {
 
 	private baseUrlForInitInstruments = 'http://localhost:5080';
 
-	private baseUrlForInstrumentPricing = 'http://a8216942521c.mylabserver.com:8090';
+	private baseUrlForInstrumentPricing = 'http://a8216942522c.mylabserver.com:8090';
 
 	constructor(private httpClient: HttpClient) {}
 

@@ -2,9 +2,23 @@ body {
   max-width: 1500px;
 }
 
+.simulatorToggle {
+  margin-top: -53px;
+  margin-left: 300px;
+}
+
+.simulatorToggleTitle {
+  margin: 10px;
+}
+
+.refreshButton {
+  margin-left: 1415px;
+  background-color: transparent;
+}
+
 .mat-column-ticker {
   flex: 0 0 3% !important;
-  min-width: 80px !important;
+  min-width: 55px !important;
 }
 
 .mat-column-contractSymbol {
@@ -12,8 +26,23 @@ body {
   min-width: 104px !important;
 }
 
+.mat-column-strikePrice {
+  flex: 0 0 3% !important;
+  min-width: 100px !important;
+}
+
 .mat-column-expirationDate {
-  flex: 0 0 11% !important;
+  flex: 0 0 9% !important;
+  min-width: 90px !important;
+}
+
+.mat-column-volatility {
+  flex: 0 0 14% !important;
+  min-width: 90px !important;
+}
+
+.mat-column-spotPrice {
+  flex: 0 0 20% !important;
   min-width: 90px !important;
 }
 
@@ -92,6 +121,7 @@ body {
   min-width: 300px;
   max-height: 450px;
   overflow: scroll;
+  margin-top: 30px;
 }
 
 .example-header {
@@ -121,9 +151,4 @@ mat-cell {
 .cdk-overlay-pane {
   background-color: lightgrey;
   position: absolute;
-}
-
-.mat-column-spotPrice {
-  flex: 0 0 12% !important;
-  min-width: 104px !important;
 }

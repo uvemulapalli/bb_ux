@@ -5,26 +5,33 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { DatePipe } from '@angular/common';
 
 export class DataDisplayResponseType {
   errorMessage: string = '';
-  dataDisplayResponse: any = [];
+  dataDisplayResponse: Array<any> = [];
 }
 
 export class DataDisplayResponse {
   ticker: string = '';
   contractSymbol: string = '';
-  spotPrice: number = 0;
   strikePrice: number = 0;
   expirationDate: string = '';
   volatility: number = 0;
-  optionPrice: number = 0;
+  spotPrice: number = 0;
+  // optionPrice: number = 0;
   predictedPrice: number = 0;
   timeTaken: number = 0;
 }
 
+export class PricingRequest {
+  instrumentId: string = '';
+  spotprice: Array<any> = [];
+}
+
 export class PricingResponseType {
-  data: any = [];
+  data: PricingResponse[] = [];
 }
 
 export class PricingResponse {
@@ -32,10 +39,10 @@ export class PricingResponse {
   predictionTime: number = 0;
   totalTime: number = 0;
   trainingTime: number = 0;
-  values: any = [];
+  values: Value[] = [];
 }
 
-export class PricingValue {
+export class Value {
   delta: number = 0;
   predictedPrice: number = 0;
   spotPrice: number = 0;
@@ -61,6 +68,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   displayTab2 = false;
 
   tab: number = 2;
+
+  isSimulationEnabled = false;
 
   dataDisplayResponseType: DataDisplayResponseType = new DataDisplayResponseType();
 
@@ -90,23 +99,32 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private uploadService: FileUploadService) {
+  constructor(private uploadService: FileUploadService, public datepipe: DatePipe) {
     this.displayTab1 = true;
     this.displayTab2 = false;
+  }
+
+  public onChange(event: MatTabChangeEvent) {
+    const tab = event.tab.textLabel;
+    console.log(tab);
+    if (tab === this.tab1Title) {
+      this.dataSource = undefined;
+      this.displayTab1 = true;
+      this.displayTab2 = false;
+      this.loadInstruments();
+    }
+    if (tab === this.tab2Title) {
+      this.displayTab1 = false;
+      this.displayTab2 = true;
+      this.isSimulationEnabled = false;
+    }
   }
 
   ngOnInit(): void {
     this.loadInstruments();
   }
 
-  ngAfterViewInit(): void { }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  private loadInstruments(): void {
+  public loadInstruments(): void {
     this.uploadService.loadAllActiveInstruments().subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
@@ -116,13 +134,14 @@ export class AppComponent implements OnInit, AfterViewInit {
           } else {
             var response = this.dataDisplayResponseType.dataDisplayResponse;
             this.dataSource = new MatTableDataSource(response);
-            this.dataSource.data.forEach((element: any) => {
-              if (element.expirationDate === 'expirationDate') {
-                element['expirationDate'] = new Date(element.expirationDate);
-              }
-            });
             this.displayedColumns = Object.keys(response[0]);
-            this.findMinMaxSpotPrice();
+            // console.log('this.displayedColumns - ' + this.displayedColumns);
+            this.dataSource.data.forEach((element: any) => {
+              element.expirationDate = this.datepipe.transform(new Date(element.expirationDate), 'MM-dd-yyyy');
+              // console.log('element - ' + JSON.stringify(element));
+              element['baseValue'] = element.spotPrice;
+              element['valid'] = 0;
+            });
           }
         }
       },
@@ -137,53 +156,119 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onChange(event: MatTabChangeEvent) {
-    const tab = event.tab.textLabel;
-    console.log(tab);
-    if (tab === this.tab1Title) {
-      this.dataSource = undefined;
-      this.displayTab1 = true;
-      this.displayTab2 = false;
+  ngAfterViewInit(): void { }
+
+  public applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  public toggle(event: MatSlideToggleChange) {
+    this.isSimulationEnabled = event.checked;
+    if(this.isSimulationEnabled) {
+      this.startSimulation();
+    } else {
       this.loadInstruments();
     }
-
-    if (tab === this.tab2Title) {
-      this.displayTab1 = false;
-      this.displayTab2 = true;
-    }
   }
 
-  generateRandom(objectToModify: any) {
-    let randomGen = Math.random() * ((9) - (1) + 1);
-    let incDecValue = Math.floor(randomGen);
-    objectToModify.spotPrice = parseFloat((objectToModify.spotPrice + (incDecValue % 2 === 0 ? -randomGen : randomGen)).toFixed(5));
-    return objectToModify;
+  public refresh() {
+    this.isSimulationEnabled = false;
+    this.dataSource.data = undefined;
+    this.loadInstruments();
   }
 
-  findMinMaxSpotPrice() {
+  private startSimulation() {
+    this.findMinMaxSpotPrice();
+    setInterval(() => { this.processSimulation(); }, 10000);
+  }
+
+  private findMinMaxSpotPrice() {
     if (this.dataSource.data.length) {
       this.minSpotPrice = Math.min(...this.dataSource.data.map((item: any) => parseFloat(item.spotPrice)));
       this.maxSpotPrice = Math.max(...this.dataSource.data.map((item: any) => parseFloat(item.spotPrice)));
       console.log(" Min: " + this.minSpotPrice);
       console.log(" Max: " + this.maxSpotPrice);
-      /* this.dataSource.data.forEach((record: any) => {
-        record['baseValue'] = record.spotPrice;
-        record['valid'] = 0;
-        setInterval(() => { record = this.generateRandom(record); }, 10000);
-      }); */
-      var tempList = this.dataSource.data;
-      const shuffledList = tempList.sort(() => 0.5 - Math.random());
-      let selected = shuffledList.slice(0, 10);
-      selected.forEach((record: any) => {
-        record['baseValue'] = record.spotPrice;
-        record['valid'] = 0;
-        setInterval(() => { record = this.generateRandom(record); }, 10000);
+    }
+  }
+
+  private processSimulation() {
+    var tempList = this.dataSource.data;
+    const shuffledList = tempList.sort(() => 0.5 - Math.random());
+    let selected = shuffledList.slice(0, 250);
+    let pricingRequests: Array<any> = [];
+    selected.forEach((element: any) => {
+      this.generateRandom(element);
+      if(element) {
+        pricingRequests.push(this.createPricingRequest(element));
+      }
+    });
+    // console.log('Pricing Requests - ' + JSON.stringify(pricingRequests));
+    this.sendPricingRequest(pricingRequests);
+  }
+
+  private createPricingRequest(element: any) {
+    const pricingRequest: PricingRequest = new PricingRequest();
+    pricingRequest.instrumentId = element.contractSymbol;
+    pricingRequest.spotprice = element.spotPrice;
+    return pricingRequest;
+  }
+
+  private generateRandom(objectToModify: any) {
+    if(this.isSimulationEnabled) {
+      let randomGen = Math.random() * ((9) - (1) + 1);
+      let incDecValue = Math.floor(randomGen);
+      objectToModify.spotPrice = parseFloat((objectToModify.spotPrice + (incDecValue % 2 === 0 ? -randomGen : randomGen)).toFixed(5));
+    }
+  }
+
+  private sendPricingRequest(requestBody: any): void {
+    this.uploadService.sendPricingRequest(requestBody).subscribe({
+    // this.uploadService.sendPricingRequestFromJson().subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          this.pricingResponseType = event.body;
+        } else {
+          this.pricingResponseType = event;
+        }
+        this.handlePricingResponse(this.pricingResponseType);
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+  }
+
+  private handlePricingResponse(pricingResponseType: any) {
+    var responses: PricingResponseType[] = pricingResponseType.data;
+    if (Array.isArray(responses)) {
+      // console.log('Pricing Responses - ' + JSON.stringify(responses));
+      responses.forEach((response: any) => {
+        var values: Value[] = response.values;
+        console.log('values - ' + JSON.stringify(values));
+        if (Array.isArray(values)) {
+          values.forEach((value: any) => {
+            if (value) {
+              var predictedPrice = value.predictedPrice;
+              var contractList = this.dataDisplayResponseType.dataDisplayResponse;
+              let elementIndex = contractList.findIndex(x => x.contractSymbol === response.instrumentId);
+              if(elementIndex > 0) {
+                let elementToBeModified = this.dataSource.data[elementIndex];
+                if(elementToBeModified) {
+                  elementToBeModified.predictedPrice = predictedPrice;
+                  elementToBeModified.timeTaken = response.predictionTime;
+                  this.dataSource.data[elementIndex] = elementToBeModified;
+                }
+              }
+            }
+          });
+        }
       });
     }
   }
 
-  getBackgroundColor(element: any, colName: any) {
-    element.predictedPrice = element.spotPrice;
+  public getBackgroundColor(element: any, colName: any) {
+    // element.predictedPrice = element.spotPrice;
     if (element.spotPrice < element.baseValue) {
       element['valid'] = -1;
       return '#FF6347';
