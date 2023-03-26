@@ -324,6 +324,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         });
     this.isContractSaved = false;
     this.isSpotPriceSaved = false;
+    this.spotPrice = 0;
   }
 
   public saveSpotPrice(sportPriceForm: any) {
