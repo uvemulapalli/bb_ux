@@ -100,6 +100,10 @@ body {
   top: 10px;
 }
 
+.displayTab2 .instumentData {
+  margin-top: -25px;
+}
+
 .displayTab2 .v2 {
   border-left: 2px dotted gray;
   height: 235px;

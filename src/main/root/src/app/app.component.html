@@ -75,9 +75,10 @@
       </mat-card-content>
     </mat-card>
     <div class="v1">
-      <mat-card *ngIf="isContractSaved">
+      <mat-card *ngIf="isContractSaved" class="instumentData">
         <mat-card-content>
-          <h3>Ticker : {{ticker}} | Contract ID: {{contractSymbol}}</h3>
+          <h3>Ticker : {{ticker}}</h3>
+          <h3>Contract ID: {{contractSymbol}}</h3>
           <h3>
             <div><mat-label>Strike Price :</mat-label> {{strikePrice}} </div><br>
             <div><mat-label>Expiration Date :</mat-label> {{expirationDate}} </div><br>
