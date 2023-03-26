@@ -2,30 +2,54 @@ body {
   max-width: 1500px;
 }
 
+.simulatorToggle {
+  margin-top: -53px;
+  margin-left: 300px;
+}
+
+.simulatorToggleTitle {
+  margin: 10px;
+}
+
+.refreshButton {
+  margin-left: 1415px;
+  background-color: transparent;
+}
+
 .mat-column-ticker {
-    flex: 0 0 3% !important;
-    min-width: 80px !important;
+  flex: 0 0 3% !important;
+  min-width: 55px !important;
 }
 
 .mat-column-contractSymbol {
-    flex: 0 0 18% !important;
-    min-width: 104px !important;
+  flex: 0 0 18% !important;
+  min-width: 104px !important;
 }
+
+.mat-column-strikePrice {
+  flex: 0 0 3% !important;
+  min-width: 100px !important;
+}
+
 .mat-column-expirationDate {
-    flex: 0 0 11% !important;
-    min-width: 90px !important;
+  flex: 0 0 9% !important;
+  min-width: 90px !important;
+}
+
+.mat-column-volatility {
+  flex: 0 0 14% !important;
+  min-width: 90px !important;
+}
+
+.mat-column-spotPrice {
+  flex: 0 0 20% !important;
+  min-width: 90px !important;
 }
 
 .spatitle {
-	justify-content: center;
-	margin-left: 33%;
-	margin-top: -15px;
-}
-
-.titlehr {
-	margin-left: 30%;
-	margin-top: -8px;
-	width: 415px;
+  text-align: center;
+  text-decoration: underline;
+  margin-top: -15px;
 }
 
 .example-tab-icon {
@@ -38,34 +62,34 @@ body {
 }
 
 .inputcontainer {
-	border-radius: 25px;
-	border: 1px dotted gray;
-	width: 100%;
-	height: 120px;
+  border-radius: 25px;
+  border: 1px dotted gray;
+  width: 100%;
+  height: 120px;
 }
 
 .v1 {
-	border-left: 2px dotted gray;
-	height: 100px;
-	position: absolute;
-	left: 45%;
-	top: 90px;
+  border-left: 2px dotted gray;
+  height: 100px;
+  position: absolute;
+  left: 45%;
+  top: 90px;
 }
 
 .dynamicdatagenerator {
-	margin-left: 65px;
-	display: inline-block;
+  margin-left: 65px;
+  display: inline-block;
 }
 
 .conditional {
-	text-align: left;
-	margin-left: -18px;
-	margin-top: 50px;
+  text-align: left;
+  margin-left: -18px;
+  margin-top: 50px;
 }
 
 .staticdatagenerator {
-	margin-top: -80px;
-	margin-left: 65px;
+  margin-top: -80px;
+  margin-left: 65px;
 }
 
 .file-input {
@@ -73,28 +97,31 @@ body {
 }
 
 .alert {
-	margin-top: -3px;
+  margin-top: -3px;
   height: 35px;
   color: red;
 }
 
-.tabularResult{
-	height: 300px;
+.tabularResult {
+  height: 300px;
 }
 
-.upload{
-	margin-top: 0;
-	margin-left: 20px;
+.upload {
+  margin-top: 0;
+  margin-left: 20px;
 }
 
-.table-align{
-	margin-left: -20px;
+.table-align {
+  margin-left: -20px;
 }
 
 .example-container {
   display: flex;
   flex-direction: column;
   min-width: 300px;
+  max-height: 450px;
+  overflow: visible;
+  margin-top: 30px;
 }
 
 .example-header {
@@ -116,6 +143,12 @@ body {
   max-height: 500px;
 }
 
-mat-header-cell, mat-cell {
- justify-content: center;
+mat-header-cell,
+mat-cell {
+  justify-content: center;
+}
+
+.cdk-overlay-pane {
+  background-color: lightgrey;
+  position: absolute;
 }

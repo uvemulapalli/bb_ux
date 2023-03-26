@@ -1,5 +1,4 @@
-<h1 class="spatitle">{{title}}</h1>
-<hr class="titlehr"><br>
+<h2 class="spatitle">{{title}}</h2>
 <mat-tab-group (selectedTabChange)="onChange($event)">
   <mat-tab label="{{tab1Title}}">
     <ng-template mat-tab-label class="example-tab">
@@ -11,23 +10,39 @@
       <h3 class="tabTile">{{tab2Title}}</h3>
     </ng-template>
   </mat-tab>
-</mat-tab-group><br>
+</mat-tab-group>
 <div *ngIf="dataSource && displayTab1" class="tabularResult">
-  <br>
-  <mat-form-field>Search<mat-label></mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="" #input>
-  </mat-form-field>
+  <div style="position: absolute;margin-top: 10px;">
+    <mat-form-field><mat-label>Search</mat-label>
+      <input style="height: 50px;margin-top: 25px;" matInput (keyup)="applyFilter($event)" placeholder="" #input>
+    </mat-form-field>
+    <div class="simulatorToggle">
+      <span>Simulation Enabled ?</span><mat-slide-toggle class="simulatorToggleTitle" [checked]="isSimulationEnabled" (change)="toggle($event)"></mat-slide-toggle>
+    </div>
+    <button class="refreshButton" (click)="refresh()"><mat-icon>refresh</mat-icon></button>
+  </div>
+  <div>
+    <mat-paginator [length]="dataSource.data?.length" [pageSize]="10" [pageSizeOptions]="[10, 20, 50, 100, 500, 1000, 2000]"
+      aria-label="Select page" showFirstLastButtons></mat-paginator>
+  </div>
   <div class="example-container">
     <mat-table [dataSource]="dataSource" matSort>
       <ng-container *ngFor="let col of displayedColumns" [matColumnDef]="col">
         <mat-header-cell class="table-header header-p" *matHeaderCellDef mat-sort-header><b>{{col}}</b></mat-header-cell>
-        <mat-cell class="table-content context-position" [ngStyle]="{'background-color': getBackgroundColor(element, col), 'border-radius' : getBorderRadius(element, col)}"
-           *matCellDef="let element">{{element[col]}}</mat-cell>
+        <div *ngIf="col !== 'spotPrice'">
+          <mat-cell class="table-content context-position" *matCellDef="let element">{{element[col]}}</mat-cell>
+        </div>
+        <div *ngIf="col === 'spotPrice'">
+          <mat-cell class="table-content context-position" *matCellDef="let element" style="border-radius: 5px" [ngStyle]="{'background-color': getBackgroundColor(element, col)}">
+            <span *ngIf="element.valid===1"><mat-icon color="primary">trending_up</mat-icon>{{element[col]}}</span>
+            <span *ngIf="element.valid===-1"><mat-icon color="warn">trending_down</mat-icon>{{element[col]}}</span>
+            <span *ngIf="element.valid===0 || !isSimulationEnabled">{{element[col]}}</span>
+          </mat-cell>
+        </div>
       </ng-container>
       <mat-header-row class="table-header header-p-row" *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row matRipple *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
   </div><br>
-  <mat-paginator [length]="dataSource.data?.length" [pageSize]="50" [pageSizeOptions]="[50, 100, 500, 1000, 2000]"
-    aria-label="Select page" showFirstLastButtons></mat-paginator>
+
 </div>
