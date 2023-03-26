@@ -323,6 +323,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           spotPrice: [null, [Validators.required]]
         });
     this.isContractSaved = false;
+    this.isSpotPriceSaved = false;
   }
 
   public saveSpotPrice(sportPriceForm: any) {
