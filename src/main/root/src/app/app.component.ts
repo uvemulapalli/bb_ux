@@ -90,6 +90,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   form: FormGroup = new FormGroup({});
 
+  sportPriceForm: FormGroup = new FormGroup({});
+
   @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
     if (this.dataSource && !this.dataSource.sort) {
       this.dataSource.sort = sort;
@@ -131,6 +133,10 @@ export class AppComponent implements OnInit, AfterViewInit {
           contractId: [null, [Validators.required]],
           ticker: [null, [Validators.required]]
         });
+
+    this.sportPriceForm = this.formBuilder.group({
+                                    spotPrice: [null, [Validators.required]]
+                                  });
   }
 
   public loadInstruments(): void {
@@ -288,9 +294,24 @@ export class AppComponent implements OnInit, AfterViewInit {
     return '';
   }
 
+  ticker: string = ' - ';
+  contractSymbol: string = ' - ';
+  strikePrice: number = 0;
+  expirationDate: string = '';
+  volatility: number = 0;
+  isContractSaved: boolean = false;
+  spotPrice: number = 0;
+  isSpotPriceSaved = false;
+
   public saveDetails(form: any) {
-    console.log('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
-    alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
+    //console.log('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
+    //alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
+    this.ticker = this.form.get('ticker')?.value;
+    this.contractSymbol = this.form.get('contractId')?.value;
+    this.strikePrice = 0.14;
+    this.expirationDate = '03-26-2023';
+    this.volatility = 0.28;
+    this.isContractSaved = true;
   }
 
   public reset() {
@@ -298,5 +319,14 @@ export class AppComponent implements OnInit, AfterViewInit {
           contractId: [null, [Validators.required]],
           ticker: [null, [Validators.required]]
         });
+    this.sportPriceForm = this.formBuilder.group({
+          spotPrice: [null, [Validators.required]]
+        });
+    this.isContractSaved = false;
+  }
+
+  public saveSpotPrice(sportPriceForm: any) {
+    this.spotPrice = this.sportPriceForm.get('spotPrice')?.value;
+    this.isSpotPriceSaved = true;
   }
 }

@@ -69,14 +69,44 @@
             </mat-form-field>
           </div>
           <div class="addInstrumentButton">
-            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Add Instrument</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid" *ngIf="!isContractSaved">Add Instrument</button>
           </div>
         </form>
       </mat-card-content>
     </mat-card>
+    <div class="v1">
+      <mat-card *ngIf="isContractSaved">
+        <mat-card-content>
+          <h3>Ticker : {{ticker}} | Contract ID: {{contractSymbol}}</h3>
+          <h3>
+            <div><mat-label>Strike Price :</mat-label> {{strikePrice}} </div><br>
+            <div><mat-label>Expiration Date :</mat-label> {{expirationDate}} </div><br>
+            <div><mat-label>Volatility :</mat-label> {{volatility}} </div><br>
+          </h3>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="v2">
+      <mat-card *ngIf="isContractSaved" >
+        <mat-card-content>
+          <form [formGroup]="sportPriceForm" (ngSubmit)="saveSpotPrice(sportPriceForm)" autocomplete="off">
+            <div>
+              <mat-form-field>
+                <mat-label>Spot Price :</mat-label>
+                <input matInput placeholder="Enter spot price" formControlName="spotPrice">
+                <mat-icon matPrefix>extension</mat-icon>
+                <mat-error *ngIf="sportPriceForm.controls['spotPrice'].errors?.['required']" class="alert">Spot price is required</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="addInstrumentButton">
+              <button mat-raised-button color="primary" type="submit" [disabled]="!sportPriceForm.valid"*ngIf="!isSpotPriceSaved">Save Spot Price</button>
+            </div>
+            {{spotPrice}}
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
-  <div class="v1"></div>
-
   <div class="resetButton">
     <button mat-raised-button color="primary" type="submit"(click)="reset()">Reset</button>
   </div>

@@ -97,7 +97,15 @@ body {
   height: 235px;
   position: absolute;
   left: 25%;
-  top: 130px;
+  top: 10px;
+}
+
+.displayTab2 .v2 {
+  border-left: 2px dotted gray;
+  height: 235px;
+  position: absolute;
+  left: 60%;
+  top: 10px;
 }
 
 .displayTab2 .alert {
