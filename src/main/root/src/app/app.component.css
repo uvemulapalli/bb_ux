@@ -120,7 +120,7 @@ body {
   flex-direction: column;
   min-width: 300px;
   max-height: 450px;
-  overflow: scroll;
+  overflow: visible;
   margin-top: 30px;
 }
 

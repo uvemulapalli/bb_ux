@@ -245,7 +245,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       // console.log('Pricing Responses - ' + JSON.stringify(responses));
       responses.forEach((response: any) => {
         var values: Value[] = response.values;
-        console.log('values - ' + JSON.stringify(values));
+        // console.log('values - ' + JSON.stringify(values));
         if (Array.isArray(values)) {
           values.forEach((value: any) => {
             if (value) {
