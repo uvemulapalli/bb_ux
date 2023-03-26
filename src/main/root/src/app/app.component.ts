@@ -7,6 +7,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DatePipe } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 export class DataDisplayResponseType {
   errorMessage: string = '';
@@ -61,7 +62,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   tab1Title = 'Simulation';
 
-  tab2Title = 'Graph';
+  tab2Title = 'Pricing New Instrument';
 
   displayTab1 = true;
 
@@ -87,6 +88,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   maxSpotPrice = 0.0;
 
+  form: FormGroup = new FormGroup({});
+
   @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
     if (this.dataSource && !this.dataSource.sort) {
       this.dataSource.sort = sort;
@@ -99,14 +102,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private uploadService: FileUploadService, public datepipe: DatePipe) {
+  constructor(private uploadService: FileUploadService,
+              public datepipe: DatePipe,
+              private formBuilder: FormBuilder) {
     this.displayTab1 = true;
     this.displayTab2 = false;
   }
 
   public onChange(event: MatTabChangeEvent) {
     const tab = event.tab.textLabel;
-    console.log(tab);
+    // console.log(tab);
     if (tab === this.tab1Title) {
       this.dataSource = undefined;
       this.displayTab1 = true;
@@ -122,6 +127,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadInstruments();
+    this.form = this.formBuilder.group({
+          contractId: [null, [Validators.required]],
+          ticker: [null, [Validators.required]]
+        });
   }
 
   public loadInstruments(): void {
@@ -277,5 +286,17 @@ export class AppComponent implements OnInit, AfterViewInit {
       return '#90EE90';
     }
     return '';
+  }
+
+  public saveDetails(form: any) {
+    console.log('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
+    alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
+  }
+
+  public reset() {
+    this.form = this.formBuilder.group({
+          contractId: [null, [Validators.required]],
+          ticker: [null, [Validators.required]]
+        });
   }
 }
