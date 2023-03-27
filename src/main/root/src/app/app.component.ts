@@ -58,17 +58,21 @@ export class Value {
 
 export class AppComponent implements OnInit, AfterViewInit {
 
-  title = 'Derivative Prices';
+  title = 'Derivative Pricing';
 
   tab1Title = 'Simulation';
 
-  tab2Title = 'Pricing New Instrument';
+  tab2Title = 'Instrument Pricing';
+
+  tab3Title = 'Pricing Report';
 
   displayTab1 = true;
 
   displayTab2 = false;
 
-  tab: number = 2;
+  displayTab3 = false;
+
+  tab: number = 3;
 
   isSimulationEnabled = false;
 
@@ -109,6 +113,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               private formBuilder: FormBuilder) {
     this.displayTab1 = true;
     this.displayTab2 = false;
+    this.displayTab3 = false;
   }
 
   public onChange(event: MatTabChangeEvent) {
@@ -121,8 +126,15 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.loadInstruments();
     }
     if (tab === this.tab2Title) {
+      this.dataSource = undefined;
       this.displayTab1 = false;
       this.displayTab2 = true;
+      this.isSimulationEnabled = false;
+    }
+    if (tab === this.tab3Title) {
+      this.dataSource = undefined;
+      this.displayTab1 = false;
+      this.displayTab2 = false;
       this.isSimulationEnabled = false;
     }
   }

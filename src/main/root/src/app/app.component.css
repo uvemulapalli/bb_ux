@@ -82,12 +82,18 @@ body {
 
 .displayTab2 .addInstrumentButton {
   margin-top: -15px;
-  margin-left: 10%;
+  margin-left: 18%;
   color: blue;
 }
 
+.displayTab2 .generatePriceButton {
+  margin: -100px -221px 28% 0;
+  color: blue;
+  float: right;
+}
+
 .displayTab2 .resetButton {
-  margin: 17% -0.5% 0 0;
+  margin: 23% -0.5% 0 0;
   float: right;
   color: red;
 }

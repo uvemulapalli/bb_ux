@@ -1,4 +1,4 @@
-<h2 class="spatitle">{{title}}</h2>
+<h1 class="spatitle">{{title}}</h1><br>
 <mat-tab-group (selectedTabChange)="onChange($event)">
   <mat-tab label="{{tab1Title}}">
     <ng-template mat-tab-label class="example-tab">
@@ -8,6 +8,11 @@
   <mat-tab label="{{tab2Title}}">
     <ng-template mat-tab-label>
       <h3 class="tabTile">{{tab2Title}}</h3>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="{{tab3Title}}">
+    <ng-template mat-tab-label>
+      <h3 class="tabTile">{{tab3Title}}</h3>
     </ng-template>
   </mat-tab>
 </mat-tab-group>
@@ -48,7 +53,7 @@
 
 
 <div *ngIf="displayTab2" class="displayTab2">
-  <div style="position: absolute;margin-top: 10px;" class="inputcontainer">
+  <div style="position: absolute;margin-top: 100px;" class="inputcontainer">
     <mat-card>
       <mat-card-content>
         <form [formGroup]="form" (ngSubmit)="saveDetails(form)" autocomplete="off">
@@ -69,7 +74,7 @@
             </mat-form-field>
           </div>
           <div class="addInstrumentButton">
-            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid" *ngIf="!isContractSaved">Add Instrument</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid" *ngIf="!isContractSaved">Add</button>
           </div>
         </form>
       </mat-card-content>
@@ -99,10 +104,12 @@
                 <mat-error *ngIf="sportPriceForm.controls['spotPrice'].errors?.['required']" class="alert">Spot price is required</mat-error>
               </mat-form-field>
             </div>
-            <div class="addInstrumentButton">
+            <div class="generatePriceButton">
               <button mat-raised-button color="primary" type="submit" [disabled]="!sportPriceForm.valid">Generate Price</button>
             </div>
-            Option/ Predicted Price: {{spotPrice}}
+            <div>
+              Option/ Predicted Price: {{spotPrice}}
+            </div>
           </form>
         </mat-card-content>
       </mat-card>
