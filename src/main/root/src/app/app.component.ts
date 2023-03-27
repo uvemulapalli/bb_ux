@@ -49,6 +49,11 @@ export class Value {
   spotPrice: number = 0;
 }
 
+export class DataPoint {
+  x: number = 0;
+  y: number = 0;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -225,18 +230,20 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private processSimulation() {
-    var tempList = this.dataSource.data;
-    const shuffledList = tempList.sort(() => 0.5 - Math.random());
-    let selected = shuffledList.slice(0, 1);
-    let pricingRequests: Array<any> = [];
-    selected.forEach((element: any) => {
-      this.generateRandom(element);
-      if(element) {
-        pricingRequests.push(this.createPricingRequest(element));
-      }
-    });
-    // console.log('Pricing Requests - ' + JSON.stringify(pricingRequests));
-    this.sendPricingRequest(pricingRequests);
+    if(this.isSimulationEnabled) {
+      var tempList = this.dataSource.data;
+      const shuffledList = tempList.sort(() => 0.5 - Math.random());
+      let selected = shuffledList.slice(0, 1);
+      let pricingRequests: Array<any> = [];
+      selected.forEach((element: any) => {
+        this.generateRandom(element);
+        if(element) {
+          pricingRequests.push(this.createPricingRequest(element));
+        }
+      });
+      // console.log('Pricing Requests - ' + JSON.stringify(pricingRequests));
+      this.sendPricingRequest(pricingRequests);
+    }
   }
 
   private createPricingRequest(element: any) {
@@ -374,16 +381,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     animationEnabled: true,
     theme: "light2",
     title:{
-    text: "Actual vs Blocksholes"
+      text: "Blocksholes vs Actual"
     },
     axisX:{
-    valueFormatString: "D MMM"
+      title: "Spot Prices"
     },
     axisY: {
-    title: "Spot Prices"
+      title: "Predicted Prices"
     },
     toolTip: {
-    shared: true
+      shared: true
     },
     legend: {
     cursor: "pointer",
@@ -400,44 +407,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     type: "line",
     showInLegend: true,
     name: "Blocksholes Price",
-    xValueFormatString: "MMM DD, YYYY",
     dataPoints: [
-      { x: new Date(2021, 8, 1), y: 63 },
-      { x: new Date(2021, 8, 2), y: 69 },
-      { x: new Date(2021, 8, 3), y: 65 },
-      { x: new Date(2021, 8, 4), y: 70 },
-      { x: new Date(2021, 8, 5), y: 71 },
-      { x: new Date(2021, 8, 6), y: 65 },
-      { x: new Date(2021, 8, 7), y: 73 },
-      { x: new Date(2021, 8, 8), y: 86 },
-      { x: new Date(2021, 8, 9), y: 74 },
-      { x: new Date(2021, 8, 10), y: 75 },
-      { x: new Date(2021, 8, 11), y: 76 },
-      { x: new Date(2021, 8, 12), y: 84 },
-      { x: new Date(2021, 8, 13), y: 87 },
-      { x: new Date(2021, 8, 14), y: 76 },
-      { x: new Date(2021, 8, 15), y: 79 }
+      { x: 1.11, y: 0.391 },
+      { x: 1.12, y: 0.401 },
+      { x: 1.13, y: 0.41 },
+      { x: 1.61, y: 0.41 }
     ]
     }, {
     type: "line",
     showInLegend: true,
     name: "Predicted Price",
     dataPoints: [
-      { x: new Date(2021, 8, 1), y: 60 },
-      { x: new Date(2021, 8, 2), y: 57 },
-      { x: new Date(2021, 8, 3), y: 51 },
-      { x: new Date(2021, 8, 4), y: 56 },
-      { x: new Date(2021, 8, 5), y: 54 },
-      { x: new Date(2021, 8, 6), y: 55 },
-      { x: new Date(2021, 8, 7), y: 54 },
-      { x: new Date(2021, 8, 8), y: 69 },
-      { x: new Date(2021, 8, 9), y: 65 },
-      { x: new Date(2021, 8, 10), y: 66 },
-      { x: new Date(2021, 8, 11), y: 63 },
-      { x: new Date(2021, 8, 12), y: 67 },
-      { x: new Date(2021, 8, 13), y: 66 },
-      { x: new Date(2021, 8, 14), y: 56 },
-      { x: new Date(2021, 8, 15), y: 64 }
+      { x: 1.11, y: 0.39 },
+      { x: 1.12, y: 0.4 },
+      { x: 1.13, y: 0.41 },
+      { x: 1.61, y: 0.38 }
     ]
     }]
   }
