@@ -117,5 +117,9 @@
   </div>
   <div class="resetButton">
     <button mat-raised-button color="primary" type="submit"(click)="reset()">Reset</button>
+  </div><br>
+  <div>
+    <h4 style="position:absolute; width:90%; margin-top: 2px;"><u>Instrument Progress :</u></h4>
+    <textarea class="instrumentProgress" [disabled]="true" [ngModel]="instrumentProgress"></textarea>
   </div>
 </div>

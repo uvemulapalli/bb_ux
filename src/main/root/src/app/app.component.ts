@@ -58,7 +58,7 @@ export class Value {
 
 export class AppComponent implements OnInit, AfterViewInit {
 
-  title = 'Derivative Pricing';
+  title = 'Derivative Price';
 
   tab1Title = 'Simulation';
 
@@ -124,6 +124,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.displayTab1 = true;
       this.displayTab2 = false;
       this.loadInstruments();
+      this.instrumentProgress = '';
     }
     if (tab === this.tab2Title) {
       this.dataSource = undefined;
@@ -136,6 +137,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.displayTab1 = false;
       this.displayTab2 = false;
       this.isSimulationEnabled = false;
+      this.instrumentProgress = '';
     }
   }
 
@@ -320,12 +322,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     //alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
     this.ticker = this.form.get('ticker')?.value;
     this.contractSymbol = this.form.get('contractId')?.value;
+    this.trackInstrumentProgress('Adding instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol);
     this.strikePrice = 0.14;
     this.expirationDate = '03-26-2023';
     this.volatility = 0.28;
     this.isContractSaved = true;
     this.form.controls['ticker'].disable();
     this.form.controls['contractId'].disable();
+    this.trackInstrumentProgress('Added instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
+                                  ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
+                                  ', Volatility - ' + this.volatility);
   }
 
   public reset() {
@@ -339,10 +345,23 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.isContractSaved = false;
     this.isSpotPriceSaved = false;
     this.spotPrice = 0;
+    this.instrumentProgress = '';
   }
 
   public saveSpotPrice(sportPriceForm: any) {
     this.spotPrice = this.sportPriceForm.get('spotPrice')?.value;
+    this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.spotPrice);
     this.isSpotPriceSaved = true;
+    this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.spotPrice);
   }
+
+  private trackInstrumentProgress(message: string) {
+    if(this.instrumentProgress) {
+      this.instrumentProgress = this.instrumentProgress + "\n" + message;
+    } else {
+      this.instrumentProgress = message;
+    }
+  }
+
+  instrumentProgress: string = '';
 }

@@ -118,6 +118,18 @@ body {
   top: 10px;
 }
 
+.displayTab2 .instrumentProgress {
+  background-color: lightgrey;
+  width: 99%;
+  height: 100px;
+  margin-top: 2%;
+  resize: none;
+  font-size: 14px;
+  font-weight: normal;
+  resize: none;
+  overflow-y: scroll;
+}
+
 .displayTab2 .alert {
   margin: 8px;
   height: 30px;
