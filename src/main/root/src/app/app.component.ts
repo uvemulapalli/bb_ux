@@ -222,7 +222,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   private startSimulation() {
     this.findMinMaxSpotPrice();
-    setInterval(() => { this.processSimulation(); }, 1000);
+    setInterval(() => { this.processSimulation(); }, 10000);
   }
 
   private findMinMaxSpotPrice() {
@@ -238,7 +238,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if(this.isSimulationEnabled) {
       var tempList = this.dataSource.data;
       const shuffledList = tempList.sort(() => 0.5 - Math.random());
-      let selected = shuffledList.slice(0, 1);
+      let selected = shuffledList.slice(0, 250);
       let pricingRequests: Array<any> = [];
       selected.forEach((element: any) => {
         this.generateRandom(element);
@@ -332,6 +332,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   spotPrice: number = 0;
   newSpotPrice: number = 0;
   isSpotPriceSaved = false;
+  predictedPrice: number = 0;
 
   public saveDetails(form: any) {
     this.ticker = this.addInstrumentform.get('ticker')?.value;
@@ -420,8 +421,55 @@ export class AppComponent implements OnInit, AfterViewInit {
   public saveSpotPrice(spotPriceForm: any) {
     this.newSpotPrice = this.spotPriceForm.get('spotPrice')?.value;
     this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
+    let pricingRequests: Array<any> = [];
+    pricingRequests.push(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice));
+    this.sendPricingRequestForScreen2(pricingRequests);
     this.isSpotPriceSaved = true;
     this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
+  }
+
+  private createSinglePricingRequest(contractSymbol: any, spotPrice: any) {
+    const pricingRequest: PricingRequest = new PricingRequest();
+    pricingRequest.instrumentId = contractSymbol;
+    pricingRequest.spotprice = [Number(spotPrice)];
+    return pricingRequest;
+  }
+
+  private sendPricingRequestForScreen2(requestBody: any): void {
+    this.uploadService.sendPricingRequest(requestBody).subscribe({
+    // this.uploadService.sendPricingRequestFromJson().subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          this.pricingResponseType = event.body;
+        } else {
+          this.pricingResponseType = event;
+        }
+        this.handlePricingResponseForSingleRequest(this.pricingResponseType);
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+  }
+
+  private handlePricingResponseForSingleRequest(pricingResponseType: any) {
+    var responses: PricingResponseType[] = pricingResponseType.data;
+    if (Array.isArray(responses)) {
+      console.log('Pricing Responses - ' + JSON.stringify(responses));
+      responses.forEach((response: any) => {
+        var values: Value[] = response.values;
+        // console.log('values - ' + JSON.stringify(values));
+        if (Array.isArray(values)) {
+          values.forEach((value: any) => {
+            if (value) {
+              if(Number(this.newSpotPrice) === value.spotPrice) {
+                 this.predictedPrice = value.predictedPrice;
+              }
+            }
+          });
+        }
+      });
+    }
   }
 
   private trackInstrumentProgress(message: string) {
