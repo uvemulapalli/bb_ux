@@ -7,6 +7,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DatePipe } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 export class DataDisplayResponseType {
   errorMessage: string = '';
@@ -57,17 +58,21 @@ export class Value {
 
 export class AppComponent implements OnInit, AfterViewInit {
 
-  title = 'Derivative Prices';
+  title = 'Derivative Price';
 
   tab1Title = 'Simulation';
 
-  tab2Title = 'Graph';
+  tab2Title = 'Instrument Pricing';
+
+  tab3Title = 'Pricing Report';
 
   displayTab1 = true;
 
   displayTab2 = false;
 
-  tab: number = 2;
+  displayTab3 = false;
+
+  tab: number = 3;
 
   isSimulationEnabled = false;
 
@@ -87,6 +92,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   maxSpotPrice = 0.0;
 
+  addInstrumentform: FormGroup = new FormGroup({});
+
+  spotPriceForm: FormGroup = new FormGroup({});
+
   @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
     if (this.dataSource && !this.dataSource.sort) {
       this.dataSource.sort = sort;
@@ -99,29 +108,49 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private uploadService: FileUploadService, public datepipe: DatePipe) {
+  constructor(private uploadService: FileUploadService,
+              public datepipe: DatePipe,
+              private formBuilder: FormBuilder) {
     this.displayTab1 = true;
     this.displayTab2 = false;
+    this.displayTab3 = false;
   }
 
   public onChange(event: MatTabChangeEvent) {
     const tab = event.tab.textLabel;
-    console.log(tab);
+    // console.log(tab);
     if (tab === this.tab1Title) {
       this.dataSource = undefined;
       this.displayTab1 = true;
       this.displayTab2 = false;
       this.loadInstruments();
+      this.instrumentProgress = '';
     }
     if (tab === this.tab2Title) {
+      this.dataSource = undefined;
       this.displayTab1 = false;
       this.displayTab2 = true;
       this.isSimulationEnabled = false;
+    }
+    if (tab === this.tab3Title) {
+      this.dataSource = undefined;
+      this.displayTab1 = false;
+      this.displayTab2 = false;
+      this.isSimulationEnabled = false;
+      this.instrumentProgress = '';
     }
   }
 
   ngOnInit(): void {
     this.loadInstruments();
+    this.addInstrumentform = this.formBuilder.group({
+          contractId: [null, [Validators.required]],
+          ticker: [null, [Validators.required]]
+        });
+
+    this.spotPriceForm = this.formBuilder.group({
+                                    spotPrice: [null, [Validators.required]]
+                                  });
   }
 
   public loadInstruments(): void {
@@ -278,4 +307,61 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     return '';
   }
+
+  ticker: string = ' - ';
+  contractSymbol: string = ' - ';
+  strikePrice: number = 0;
+  expirationDate: string = '';
+  volatility: number = 0;
+  isContractSaved: boolean = false;
+  spotPrice: number = 0;
+  isSpotPriceSaved = false;
+
+  public saveDetails(form: any) {
+    //console.log('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
+    //alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
+    this.ticker = this.addInstrumentform.get('ticker')?.value;
+    this.contractSymbol = this.addInstrumentform.get('contractId')?.value;
+    this.trackInstrumentProgress('Adding instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol);
+    this.strikePrice = 0.14;
+    this.expirationDate = '03-26-2023';
+    this.volatility = 0.28;
+    this.isContractSaved = true;
+    this.addInstrumentform.controls['ticker'].disable();
+    this.addInstrumentform.controls['contractId'].disable();
+    this.trackInstrumentProgress('Added instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
+                                  ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
+                                  ', Volatility - ' + this.volatility);
+  }
+
+  public reset() {
+    this.addInstrumentform = this.formBuilder.group({
+          contractId: [null, [Validators.required]],
+          ticker: [null, [Validators.required]]
+        });
+    this.spotPriceForm = this.formBuilder.group({
+          spotPrice: [null, [Validators.required]]
+        });
+    this.isContractSaved = false;
+    this.isSpotPriceSaved = false;
+    this.spotPrice = 0;
+    this.instrumentProgress = '';
+  }
+
+  public saveSpotPrice(spotPriceForm: any) {
+    this.spotPrice = this.spotPriceForm.get('spotPrice')?.value;
+    this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.spotPrice);
+    this.isSpotPriceSaved = true;
+    this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.spotPrice);
+  }
+
+  private trackInstrumentProgress(message: string) {
+    if(this.instrumentProgress) {
+      this.instrumentProgress = this.instrumentProgress + "\n" + message;
+    } else {
+      this.instrumentProgress = message;
+    }
+  }
+
+  instrumentProgress: string = '';
 }
