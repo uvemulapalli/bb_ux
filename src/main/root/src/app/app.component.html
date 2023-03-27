@@ -73,7 +73,7 @@
             </mat-form-field>
           </div>
           <div class="addInstrumentButton">
-            <button mat-raised-button color="primary" type="submit" [disabled]="!addInstrumentform.valid" *ngIf="!isContractSaved">Add</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!addInstrumentform.valid || isContractSaved">Add</button>
           </div>
         </form>
       </mat-card-content>
@@ -81,14 +81,16 @@
     <div class="v1">
       <mat-card *ngIf="isContractSaved" class="instumentData">
         <mat-card-content>
-          <h3>Ticker : {{ticker}}</h3>
-          <h3>Contract ID: {{contractSymbol}}</h3>
+          <h3>Ticker : {{ticker}} | Contract ID: <span>{{contractSymbol}}</span></h3>
+          <h3>Strike Price : {{strikePrice}}  |  Spot Price : {{spotPrice}}</h3>
           <h3>
-            <div><mat-label>Strike Price :</mat-label> {{strikePrice}} </div><br>
             <div><mat-label>Expiration Date :</mat-label> {{expirationDate}} </div><br>
             <div><mat-label>Volatility :</mat-label> {{volatility}} </div><br>
           </h3>
         </mat-card-content>
+        <div class="generateSetButton">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!isContractSaved" (click)="generateTrainingSet()">Generate Training Set</button>
+        </div>
       </mat-card>
     </div>
     <div class="v2">
@@ -107,7 +109,7 @@
               <button mat-raised-button color="primary" type="submit" [disabled]="!spotPriceForm.valid">Generate Price</button>
             </div>
             <div>
-              Option/ Predicted Price: {{spotPrice}}
+              Option/ Predicted Price: {{newSpotPrice}}
             </div>
           </form>
         </mat-card-content>
@@ -115,7 +117,7 @@
     </div>
   </div>
   <div class="resetButton">
-    <button mat-raised-button color="primary" type="submit"(click)="reset()">Reset</button>
+    <button mat-raised-button color="primary" type="submit" (click)="resetTab2()">Reset</button>
   </div><br>
   <div>
     <h4 style="position:absolute; width:90%; margin-top: 2px;"><u>Instrument Progress :</u></h4>

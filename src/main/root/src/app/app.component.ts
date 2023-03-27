@@ -131,6 +131,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.loadInstruments();
       this.instrumentProgress = '';
       this.displayTab3 = false;
+      this.resetTab2();
     }
     if (tab === this.tab2Title) {
       this.dataSource = undefined;
@@ -146,6 +147,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.isSimulationEnabled = false;
       this.instrumentProgress = '';
       this.displayTab3 = true;
+      this.resetTab2();
+      console.log('dataDisplayResponse - ' + this.dataDisplayResponseType.dataDisplayResponse);
     }
   }
 
@@ -160,6 +163,8 @@ export class AppComponent implements OnInit, AfterViewInit {
                                     spotPrice: [null, [Validators.required]]
                                   });
   }
+
+
 
   public loadInstruments(): void {
     this.uploadService.loadAllActiveInstruments().subscribe({
@@ -325,26 +330,80 @@ export class AppComponent implements OnInit, AfterViewInit {
   volatility: number = 0;
   isContractSaved: boolean = false;
   spotPrice: number = 0;
+  newSpotPrice: number = 0;
   isSpotPriceSaved = false;
 
   public saveDetails(form: any) {
-    //console.log('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
-    //alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
     this.ticker = this.addInstrumentform.get('ticker')?.value;
     this.contractSymbol = this.addInstrumentform.get('contractId')?.value;
     this.trackInstrumentProgress('Adding instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol);
-    this.strikePrice = 0.14;
-    this.expirationDate = '03-26-2023';
-    this.volatility = 0.28;
-    this.isContractSaved = true;
-    this.addInstrumentform.controls['ticker'].disable();
-    this.addInstrumentform.controls['contractId'].disable();
-    this.trackInstrumentProgress('Added instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
-                                  ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
-                                  ', Volatility - ' + this.volatility);
+    this.uploadService.saveMarketData(this.ticker, this.contractSymbol).subscribe({
+      next: (event: any) => {
+      var dataDisplayResponses: Array<DataDisplayResponse> = [];
+        if (event instanceof HttpResponse) {
+          dataDisplayResponses = event.body;
+        } else {
+          dataDisplayResponses = event;
+        }
+        if (Array.isArray(dataDisplayResponses)) {
+          var dataDisplayResponse: DataDisplayResponse = dataDisplayResponses[0];
+          this.strikePrice = dataDisplayResponse.strikePrice;
+          this.expirationDate = dataDisplayResponse.expirationDate;
+          this.volatility = dataDisplayResponse.volatility;
+          this.spotPrice = dataDisplayResponse.spotPrice;
+          this.isContractSaved = true;
+          this.addInstrumentform.controls['ticker'].disable();
+          this.addInstrumentform.controls['contractId'].disable();
+          this.trackInstrumentProgress('Added instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
+                                        ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
+                                        ', Volatility - ' + this.volatility);
+        }
+      },
+      error: (err: any) => {
+        console.log(err);
+        this.trackInstrumentProgress('Failed to add instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
+                                      ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
+                                      ', Volatility - ' + this.volatility);
+
+        this.isContractSaved = false;
+      }
+    });
   }
 
-  public reset() {
+  public generateTrainingSet() {
+    var requestBody: Array<any> = [];
+    const request:JSON = <JSON><unknown>{
+            "ticker": this.contractSymbol,
+            "strikeprice": JSON.stringify(this.strikePrice),
+            "spotprice": JSON.stringify(this.spotPrice),
+            "volatility": this.volatility,
+            "expiry": this.expirationDate
+          }
+    requestBody.push(request);
+    this.trackInstrumentProgress('Started generating training set for : Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
+                                            ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
+                                            ', Volatility - ' + this.volatility);
+    this.uploadService.generateTrainingSet(requestBody).subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          console.log('event - ' + JSON.stringify(event));
+          this.trackInstrumentProgress('Completed generating training set for : Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
+                                                  ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
+                                                  ', Volatility - ' + this.volatility);
+        }
+      },
+      error: (err: any) => {
+        console.log(err);
+        this.trackInstrumentProgress('Completed generating training set for : Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
+                                      ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
+                                      ', Volatility - ' + this.volatility);
+
+        this.isContractSaved = false;
+      }
+    });
+  }
+
+  public resetTab2() {
     this.addInstrumentform = this.formBuilder.group({
           contractId: [null, [Validators.required]],
           ticker: [null, [Validators.required]]
@@ -359,10 +418,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public saveSpotPrice(spotPriceForm: any) {
-    this.spotPrice = this.spotPriceForm.get('spotPrice')?.value;
-    this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.spotPrice);
+    this.newSpotPrice = this.spotPriceForm.get('spotPrice')?.value;
+    this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
     this.isSpotPriceSaved = true;
-    this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.spotPrice);
+    this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
   }
 
   private trackInstrumentProgress(message: string) {
