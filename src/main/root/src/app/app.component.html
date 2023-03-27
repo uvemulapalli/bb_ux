@@ -56,13 +56,13 @@
   <div style="position: absolute;margin-top: 100px;" class="inputcontainer">
     <mat-card>
       <mat-card-content>
-        <form [formGroup]="form" (ngSubmit)="saveDetails(form)" autocomplete="off">
+        <form [formGroup]="addInstrumentform" (ngSubmit)="saveDetails(addInstrumentform)" autocomplete="off">
           <div>
             <mat-form-field>
               <mat-label>Ticker :</mat-label>
               <input matInput placeholder="Enter ticker symbol" formControlName="ticker">
               <mat-icon matPrefix>control_point</mat-icon>
-              <mat-error *ngIf="form.controls['ticker'].errors?.['required']" class="alert">Ticker is required</mat-error>
+              <mat-error *ngIf="addInstrumentform.controls['ticker'].errors?.['required']" class="alert">Ticker is required</mat-error>
             </mat-form-field>
           </div>
           <div>
@@ -70,11 +70,11 @@
               <mat-label>Contract ID :</mat-label>
               <input matInput formControlName="contractId" placeholder="Enter contract id">
               <mat-icon matPrefix>account_balance</mat-icon>
-              <mat-error *ngIf="form.controls['contractId'].errors?.['required']" class="alert">Contract ID is required</mat-error>
+              <mat-error *ngIf="addInstrumentform.controls['contractId'].errors?.['required']" class="alert">Contract ID is required</mat-error>
             </mat-form-field>
           </div>
           <div class="addInstrumentButton">
-            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid" *ngIf="!isContractSaved">Add</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!addInstrumentform.valid" *ngIf="!isContractSaved">Add</button>
           </div>
         </form>
       </mat-card-content>
@@ -95,17 +95,17 @@
     <div class="v2">
       <mat-card *ngIf="isContractSaved" >
         <mat-card-content>
-          <form [formGroup]="sportPriceForm" (ngSubmit)="saveSpotPrice(sportPriceForm)" autocomplete="off">
+          <form [formGroup]="spotPriceForm" (ngSubmit)="saveSpotPrice(spotPriceForm)" autocomplete="off">
             <div>
               <mat-form-field>
                 <mat-label>Spot Price :</mat-label>
                 <input matInput placeholder="Enter spot price" formControlName="spotPrice">
                 <mat-icon matPrefix>attach_money</mat-icon>
-                <mat-error *ngIf="sportPriceForm.controls['spotPrice'].errors?.['required']" class="alert">Spot price is required</mat-error>
+                <mat-error *ngIf="spotPriceForm.controls['spotPrice'].errors?.['required']" class="alert">Spot price is required</mat-error>
               </mat-form-field>
             </div>
             <div class="generatePriceButton">
-              <button mat-raised-button color="primary" type="submit" [disabled]="!sportPriceForm.valid">Generate Price</button>
+              <button mat-raised-button color="primary" type="submit" [disabled]="!spotPriceForm.valid">Generate Price</button>
             </div>
             <div>
               Option/ Predicted Price: {{spotPrice}}

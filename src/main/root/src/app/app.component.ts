@@ -92,9 +92,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   maxSpotPrice = 0.0;
 
-  form: FormGroup = new FormGroup({});
+  addInstrumentform: FormGroup = new FormGroup({});
 
-  sportPriceForm: FormGroup = new FormGroup({});
+  spotPriceForm: FormGroup = new FormGroup({});
 
   @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
     if (this.dataSource && !this.dataSource.sort) {
@@ -143,12 +143,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadInstruments();
-    this.form = this.formBuilder.group({
+    this.addInstrumentform = this.formBuilder.group({
           contractId: [null, [Validators.required]],
           ticker: [null, [Validators.required]]
         });
 
-    this.sportPriceForm = this.formBuilder.group({
+    this.spotPriceForm = this.formBuilder.group({
                                     spotPrice: [null, [Validators.required]]
                                   });
   }
@@ -320,26 +320,26 @@ export class AppComponent implements OnInit, AfterViewInit {
   public saveDetails(form: any) {
     //console.log('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
     //alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
-    this.ticker = this.form.get('ticker')?.value;
-    this.contractSymbol = this.form.get('contractId')?.value;
+    this.ticker = this.addInstrumentform.get('ticker')?.value;
+    this.contractSymbol = this.addInstrumentform.get('contractId')?.value;
     this.trackInstrumentProgress('Adding instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol);
     this.strikePrice = 0.14;
     this.expirationDate = '03-26-2023';
     this.volatility = 0.28;
     this.isContractSaved = true;
-    this.form.controls['ticker'].disable();
-    this.form.controls['contractId'].disable();
+    this.addInstrumentform.controls['ticker'].disable();
+    this.addInstrumentform.controls['contractId'].disable();
     this.trackInstrumentProgress('Added instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
                                   ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
                                   ', Volatility - ' + this.volatility);
   }
 
   public reset() {
-    this.form = this.formBuilder.group({
+    this.addInstrumentform = this.formBuilder.group({
           contractId: [null, [Validators.required]],
           ticker: [null, [Validators.required]]
         });
-    this.sportPriceForm = this.formBuilder.group({
+    this.spotPriceForm = this.formBuilder.group({
           spotPrice: [null, [Validators.required]]
         });
     this.isContractSaved = false;
@@ -348,8 +348,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.instrumentProgress = '';
   }
 
-  public saveSpotPrice(sportPriceForm: any) {
-    this.spotPrice = this.sportPriceForm.get('spotPrice')?.value;
+  public saveSpotPrice(spotPriceForm: any) {
+    this.spotPrice = this.spotPriceForm.get('spotPrice')?.value;
     this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.spotPrice);
     this.isSpotPriceSaved = true;
     this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.spotPrice);
