@@ -12,9 +12,9 @@ body {
 }
 
 .refreshButton {
-  margin-left: 1415px;
+  margin-left: 1440px;
   background-color: transparent;
-  margin-top: 1px;
+  margin-top: -1px;
 }
 
 .mat-column-ticker {
