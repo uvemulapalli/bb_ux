@@ -12,6 +12,10 @@ export class FileUploadService {
 
 	private baseUrlForInstrumentPricing = 'http://a8216942522c.mylabserver.com:8090';
 
+	private baseUrlForGetOption = 'http://137.117.43.12:5000';
+
+	private baseUrlForGeneratingTrainingSet = 'http://137.117.43.12:5001';
+
 	constructor(private httpClient: HttpClient) {}
 
 	loadAllActiveInstruments(): Observable<HttpEvent<any>> {
@@ -33,5 +37,23 @@ export class FileUploadService {
 
 	sendPricingRequestFromJson() {
     return this.httpClient.get("assets/pricingResponse.json");
+  }
+
+	saveMarketData(ticker: string, contractSymbol: string): Observable<HttpEvent<any>> {
+	  let getOptionUrl = this.baseUrlForGetOption + '/getOption?ticker=' + ticker + '&contractSymbol=' + contractSymbol;
+    const req = new HttpRequest('GET', `${getOptionUrl}`, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.httpClient.request(req);
+  }
+
+	generateTrainingSet(requestBody: any): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', `${this.baseUrlForGeneratingTrainingSet}/train/GetTrainingSetForInstruments`, requestBody, {
+      headers : new HttpHeaders({"Content-Type": "application/json"}),
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.httpClient.request(req);
   }
 }
