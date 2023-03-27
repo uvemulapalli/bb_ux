@@ -49,6 +49,11 @@ export class Value {
   spotPrice: number = 0;
 }
 
+export class DataPoint {
+  x: number = 0;
+  y: number = 0;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -125,12 +130,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.displayTab2 = false;
       this.loadInstruments();
       this.instrumentProgress = '';
+      this.displayTab3 = false;
     }
     if (tab === this.tab2Title) {
       this.dataSource = undefined;
       this.displayTab1 = false;
       this.displayTab2 = true;
       this.isSimulationEnabled = false;
+      this.displayTab3 = false;
     }
     if (tab === this.tab3Title) {
       this.dataSource = undefined;
@@ -138,6 +145,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.displayTab2 = false;
       this.isSimulationEnabled = false;
       this.instrumentProgress = '';
+      this.displayTab3 = true;
     }
   }
 
@@ -222,18 +230,20 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private processSimulation() {
-    var tempList = this.dataSource.data;
-    const shuffledList = tempList.sort(() => 0.5 - Math.random());
-    let selected = shuffledList.slice(0, 1);
-    let pricingRequests: Array<any> = [];
-    selected.forEach((element: any) => {
-      this.generateRandom(element);
-      if(element) {
-        pricingRequests.push(this.createPricingRequest(element));
-      }
-    });
-    // console.log('Pricing Requests - ' + JSON.stringify(pricingRequests));
-    this.sendPricingRequest(pricingRequests);
+    if(this.isSimulationEnabled) {
+      var tempList = this.dataSource.data;
+      const shuffledList = tempList.sort(() => 0.5 - Math.random());
+      let selected = shuffledList.slice(0, 1);
+      let pricingRequests: Array<any> = [];
+      selected.forEach((element: any) => {
+        this.generateRandom(element);
+        if(element) {
+          pricingRequests.push(this.createPricingRequest(element));
+        }
+      });
+      // console.log('Pricing Requests - ' + JSON.stringify(pricingRequests));
+      this.sendPricingRequest(pricingRequests);
+    }
   }
 
   private createPricingRequest(element: any) {
@@ -364,4 +374,55 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   instrumentProgress: string = '';
+
+  chart: any;
+
+  chartOptions = {
+    animationEnabled: true,
+    theme: "light2",
+    title:{
+      text: "Blocksholes vs Actual"
+    },
+    axisX:{
+      title: "Spot Prices"
+    },
+    axisY: {
+      title: "Predicted Prices"
+    },
+    toolTip: {
+      shared: true
+    },
+    legend: {
+    cursor: "pointer",
+    itemclick: function (e: any) {
+      if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+        e.dataSeries.visible = false;
+      } else {
+        e.dataSeries.visible = true;
+      }
+      e.chart.render();
+    }
+    },
+    data: [{
+    type: "line",
+    showInLegend: true,
+    name: "Blocksholes Price",
+    dataPoints: [
+      { x: 1.11, y: 0.391 },
+      { x: 1.12, y: 0.401 },
+      { x: 1.13, y: 0.41 },
+      { x: 1.61, y: 0.41 }
+    ]
+    }, {
+    type: "line",
+    showInLegend: true,
+    name: "Predicted Price",
+    dataPoints: [
+      { x: 1.11, y: 0.39 },
+      { x: 1.12, y: 0.4 },
+      { x: 1.13, y: 0.41 },
+      { x: 1.61, y: 0.38 }
+    ]
+    }]
+  }
 }
