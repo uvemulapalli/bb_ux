@@ -222,7 +222,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   private startSimulation() {
     this.findMinMaxSpotPrice();
-    setInterval(() => { this.processSimulation(); }, 1000);
+    setInterval(() => { this.processSimulation(); }, 10000);
   }
 
   private findMinMaxSpotPrice() {
@@ -238,7 +238,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if(this.isSimulationEnabled) {
       var tempList = this.dataSource.data;
       const shuffledList = tempList.sort(() => 0.5 - Math.random());
-      let selected = shuffledList.slice(0, 1);
+      let selected = shuffledList.slice(0, 250);
       let pricingRequests: Array<any> = [];
       selected.forEach((element: any) => {
         this.generateRandom(element);

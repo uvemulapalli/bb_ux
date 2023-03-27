@@ -3,7 +3,7 @@ body {
 }
 
 .simulatorToggle {
-  margin-top: -53px;
+  margin-top: -5%;
   margin-left: 300px;
 }
 
@@ -14,7 +14,7 @@ body {
 .refreshButton {
   margin-left: 1440px;
   background-color: transparent;
-  margin-top: -1px;
+  margin-top: 1%;
 }
 
 .mat-column-ticker {
