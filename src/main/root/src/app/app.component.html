@@ -1,3 +1,7 @@
+<div class="maskBlock" *ngIf="showLoading">
+  <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" alt="">
+</div>
+
 <h1 class="spatitle">{{title}}</h1><br>
 <mat-tab-group (selectedTabChange)="onChange($event)">
   <mat-tab label="{{tab1Title}}">
@@ -126,10 +130,30 @@
 </div>
 
 <div *ngIf="displayTab3" class="displayTab3">
-  <div>
-    <br><br>
+  <div class="tab3Layout">
+    <div>
+        <input type="text" [(ngModel)]="userSearchText" (keyup)="filterData()">
+        <ul class="filterdListItems" >
+          <li *ngFor="let item of filteredContractData;let tempIndex = index" (click)="showSelectedContract(tempIndex)">{{item.contractSymbol}}</li>
+        </ul>
+        <div *ngIf="selectedFilteredContractData.ticker">
+          <h4>Ticker : <span>{{selectedFilteredContractData.ticker}}</span></h4>
+          <h4>Contract : <span>{{selectedFilteredContractData.contractSymbol}}</span></h4>
+          <h4>Spot : <span>{{selectedFilteredContractData.spotPrice}}</span></h4>
+          <h4>Strike : <span>{{selectedFilteredContractData.strikePrice}}</span></h4>
+          <h4>Volatility : <span>{{selectedFilteredContractData.volatility}}</span></h4>
+          <h4>Expiry : <span>{{selectedFilteredContractData.expirationDate}}</span></h4>
+          <div>
+            <button (click)="generateReport()">Generate Report<mat-icon class="chartIcon">insert_chart</mat-icon></button>
+            <!-- <input mat-raised-button color="primary" type="button" value="Generate Report" (click)="generateReport()"> -->
+          </div>
+        </div>
+    </div>
+    <div>
+      <div>
+        <canvasjs-chart [options]="chartOptions" (chartInstance)="getChartInstance($event)" [styles]="{width: '100%', height:'600px'}"></canvasjs-chart>
+      </div>
+    </div>
   </div>
-  <div>
-    <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height:'360px'}"></canvasjs-chart>
-  </div>
+
 </div>

@@ -18,6 +18,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+
 import * as CanvasJSAngularChart from '../assets/canvasjs.angular.component';
 var CanvasJSChart = CanvasJSAngularChart.CanvasJSChart;
 
@@ -27,6 +29,7 @@ var CanvasJSChart = CanvasJSAngularChart.CanvasJSChart;
     CanvasJSChart
   ],
   imports: [
+    MatListModule,
     CommonModule,
     MatNativeDateModule,
     BrowserModule,
