@@ -202,8 +202,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           blocksholesData.forEach((element: any) => {
             this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
             // this.chart.render();
-            pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot));
+            pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot * 100));
           });
+          console.log(pricingRequests);
           this.sendPricingRequestForScreen3(pricingRequests);
         }
       },
@@ -215,20 +216,20 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public filterData():void {
-    console.log("change happend");
-    console.log(this.userSearchText);
+    // console.log("change happend");
+    // console.log(this.userSearchText);
     // this.chart.render();
     if (this.userSearchText.length >= 3) {
       this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse.filter((value:any) => {
-        console.log(value.contractSymbol)
+        // console.log(value.contractSymbol)
         if (value.contractSymbol.toLowerCase().match(this.userSearchText.toLowerCase())) {
           return true;
         } else {
           return false;
         }
       });
-      console.log("this.filteredContractData")
-      console.log(this.filteredContractData)
+      // console.log("this.filteredContractData")
+      // console.log(this.filteredContractData)
     } else if (this.userSearchText.length == 0) {
       this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse
     }
@@ -237,6 +238,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public showSelectedContract(index:number):void {
     console.log(this.filteredContractData[index]);
     this.selectedFilteredContractData = this.filteredContractData[index];
+    this.userSearchText = this.selectedFilteredContractData.contractSymbol;
   }
 
   public loadInstruments(): void {
@@ -574,15 +576,16 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (Array.isArray(values)) {
           values.forEach((value: any) => {
             if (value) {
-              this.chartOptions.data[1].dataPoints.push({x: value.spotPrice, y: value.predictedPrice});
+              this.chartOptions.data[1].dataPoints.push({x: value.spotPrice/100, y: value.predictedPrice});
+              // this.chartOptions.data[1].dataPoints.push({x:value.predictedPrice , y: value.spotPrice/100});
               // this.chart.render();
             }
           });
         }
       });
     }
-    console.log('chart options');
-    console.log(this.chartOptions);
+    // console.log('chart options');
+    // console.log(this.chartOptions);
     this.chart.render();
     this.showLoading = false;
   }
