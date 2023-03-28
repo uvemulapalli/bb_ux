@@ -148,6 +148,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.displayTab3 = false;
     }
     if (tab === this.tab3Title) {
+      this.chartOptions.data[0].dataPoints = [];
+      this.chartOptions.data[1].dataPoints = [];
       this.showLoading = false;
       this.dataSource = undefined;
       this.displayTab1 = false;
@@ -174,6 +176,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   public generateReport():void {
     this.showLoading = true;
+    this.chartOptions.data[0].dataPoints = [];
+    this.chartOptions.data[1].dataPoints = [];
+    this.chart.render();
     //selectedFilteredContractData
     var expiry: any = '';
     if(this.selectedFilteredContractData.expirationDate) {
@@ -193,8 +198,6 @@ export class AppComponent implements OnInit, AfterViewInit {
           // console.log('event - ' + JSON.stringify(event));
           var blocksholesData: any = event.body.data[0].test_data;
           console.log(blocksholesData);
-          this.chartOptions.data[0].dataPoints = [];
-          this.chartOptions.data[1].dataPoints = [];
           let pricingRequests: Array<any> = [];
           blocksholesData.forEach((element: any) => {
             this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
@@ -211,8 +214,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public filterData():void {
-    console.log("change happend")
-    console.log(this.userSearchText)
+    console.log("change happend");
+    console.log(this.userSearchText);
+    this.chart.render();
     if (this.userSearchText.length >= 3) {
       this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse.filter((value:any) => {
         console.log(value.contractSymbol)
