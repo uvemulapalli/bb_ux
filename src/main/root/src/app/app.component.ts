@@ -187,12 +187,13 @@ export class AppComponent implements OnInit, AfterViewInit {
           // console.log('event - ' + JSON.stringify(event));
           var blocksholesData: any = event.body.data[0].training_data;
           console.log(blocksholesData);
-          var dataPointsBlocksholes = this.chartOptions.data[0].dataPoints;
+          this.chartOptions.data[0].dataPoints = [];
           blocksholesData.forEach((element: any) => {
-            dataPointsBlocksholes.push({x: element.spot, y: element.price});
+            this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.price});
           });
           console.log('chart options');
           console.log(this.chartOptions);
+          this.chart.render();
         }
       },
       error: (err: any) => {
@@ -580,7 +581,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     type: "line",
     showInLegend: true,
     name: "Blocksholes Price",
-    dataPoints: []
+    dataPoints: [
+      { x: 1.11, y: 0.39 },
+      { x: 1.12, y: 0.4 },
+      { x: 1.13, y: 0.41 },
+      { x: 1.61, y: 0.38 }
+      ]
     }, {
     type: "line",
     showInLegend: true,
@@ -592,5 +598,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       { x: 1.61, y: 0.38 }
     ]
     }]
+  }
+  public getChartInstance(event: any):void {
+    console.log("getChartInstance")
+    console.log(event)
+    this.chart = event;
   }
 }
