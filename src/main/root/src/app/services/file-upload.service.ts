@@ -16,6 +16,8 @@ export class FileUploadService {
 
 	private baseUrlForGeneratingTrainingSet = 'http://137.117.43.12:5001';
 
+	private baseUrlForGeneratingReport = 'http://137.117.43.12:5001';
+
 	constructor(private httpClient: HttpClient) {}
 
 	loadAllActiveInstruments(): Observable<HttpEvent<any>> {
@@ -50,6 +52,15 @@ export class FileUploadService {
 
 	generateTrainingSet(requestBody: any): Observable<HttpEvent<any>> {
     const req = new HttpRequest('POST', `${this.baseUrlForGeneratingTrainingSet}/train/GetTrainingSetForInstruments`, requestBody, {
+      headers : new HttpHeaders({"Content-Type": "application/json"}),
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.httpClient.request(req);
+  }
+
+	generateReport(requestBody: any): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', `${this.baseUrlForGeneratingReport}/train/GetTrainingSetForInstruments`, requestBody, {
       headers : new HttpHeaders({"Content-Type": "application/json"}),
       reportProgress: true,
       responseType: 'json'

@@ -196,3 +196,30 @@ mat-cell {
   background-color: lightgrey;
   position: absolute;
 }
+
+.tab3Layout {
+  display: grid;
+  grid-template-columns: 300px auto;
+  padding-top: 30px;
+}
+
+.filterdListItems {
+  width: 288px;
+  height: 200px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  margin: 0;
+  overflow: auto;
+}
+
+.filterdListItems li {
+  list-style: none;
+  border: 1px solid;
+  padding: 5px;
+  margin: 5px;
+}
+
+.filterdListItems li:hover {
+  background-color: #ccc;
+  cursor: pointer;
+}

@@ -63,6 +63,9 @@ export class DataPoint {
 
 export class AppComponent implements OnInit, AfterViewInit {
 
+  public selectedFilteredContractData:DataDisplayResponse = new DataDisplayResponse();
+  public userSearchText:string = '';
+  public filteredContractData:any = [];
   title = 'Derivative Price';
 
   tab1Title = 'Simulation';
@@ -148,7 +151,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.instrumentProgress = '';
       this.displayTab3 = true;
       this.resetTab2();
-      console.log('dataDisplayResponse - ' + this.dataDisplayResponseType.dataDisplayResponse);
+      this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse;
     }
   }
 
@@ -164,7 +167,70 @@ export class AppComponent implements OnInit, AfterViewInit {
                                   });
   }
 
+  public generateReport():void {
+    //selectedFilteredContractData
+    var expiry: any = '';
+    if(this.selectedFilteredContractData.expirationDate) {
+      expiry = this.datepipe.transform(new Date(this.selectedFilteredContractData.expirationDate), 'yyyy-MM-dd');
+    }
+    let requestBody = [{
+      "ticker": this.selectedFilteredContractData.contractSymbol,
+      "strikeprice": this.selectedFilteredContractData.strikePrice.toString(),
+      "spotprice": this.selectedFilteredContractData.spotPrice.toString(),
+      "volatility": this.selectedFilteredContractData.volatility.toString(),
+      "expiry": expiry.toString()
+    }];
+    //console.log(requestBody);
+    this.uploadService.generateTrainingSet(requestBody).subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          // console.log('event - ' + JSON.stringify(event));
+          var blocksholesData: any = event.body.data[0].training_data;
+          console.log(blocksholesData);
+          var dataPointsBlocksholes = this.chartOptions.data[0].dataPoints;
+          blocksholesData.forEach((element: any) => {
+            dataPointsBlocksholes.push({x: element.spot, y: element.price});
+          });
+          console.log('chart options');
+          console.log(this.chartOptions);
+        }
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+  }
 
+  public filterData():void {
+    console.log("change happend")
+    console.log(this.userSearchText)
+    if (this.userSearchText.length >= 3) {
+      this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse.filter((value:any) => {
+        console.log(value.contractSymbol)
+        if (value.contractSymbol.match(this.userSearchText)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      console.log("this.filteredContractData")
+      console.log(this.filteredContractData)
+    } else if (this.userSearchText.length == 0) {
+      this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse
+    }
+  }
+
+  public showSelectedContract(index:number):void {
+    console.log(this.filteredContractData[index]);
+    this.selectedFilteredContractData = this.filteredContractData[index];
+    // var selectedContract = this.dataDisplayResponseType.dataDisplayResponse.filter((value:any) => {
+    //   if (value.contractSymbol === contractId) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // });
+  }
 
   public loadInstruments(): void {
     this.uploadService.loadAllActiveInstruments().subscribe({
@@ -514,12 +580,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     type: "line",
     showInLegend: true,
     name: "Blocksholes Price",
-    dataPoints: [
-      { x: 1.11, y: 0.391 },
-      { x: 1.12, y: 0.401 },
-      { x: 1.13, y: 0.41 },
-      { x: 1.61, y: 0.41 }
-    ]
+    dataPoints: []
     }, {
     type: "line",
     showInLegend: true,
