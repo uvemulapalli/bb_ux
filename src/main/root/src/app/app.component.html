@@ -136,13 +136,13 @@
         <ul class="filterdListItems" >
           <li *ngFor="let item of filteredContractData;let tempIndex = index" (click)="showSelectedContract(tempIndex)">{{item.contractSymbol}}</li>
         </ul>
-        <div *ngIf="selectedFilteredContractData.ticker">
-          <h4>Ticker : <span>{{selectedFilteredContractData.ticker}}</span></h4>
-          <h4>Contract : <span>{{selectedFilteredContractData.contractSymbol}}</span></h4>
-          <h4>Spot : <span>{{selectedFilteredContractData.spotPrice}}</span></h4>
-          <h4>Strike : <span>{{selectedFilteredContractData.strikePrice}}</span></h4>
-          <h4>Volatility : <span>{{selectedFilteredContractData.volatility}}</span></h4>
-          <h4>Expiry : <span>{{selectedFilteredContractData.expirationDate}}</span></h4>
+        <div *ngIf="selectedFilteredContractData.ticker"><br>
+          <div><b>Ticker : </b>{{selectedFilteredContractData.ticker}}</div><br>
+          <div><b>Contract : </b>{{selectedFilteredContractData.contractSymbol}}</div><br>
+          <div><b>Spot : </b>{{selectedFilteredContractData.spotPrice}}</div><br>
+          <div><b>Strike : </b>{{selectedFilteredContractData.strikePrice}}</div><br>
+          <div><b>Volatility : </b>{{selectedFilteredContractData.volatility}}</div><br>
+          <div><b>Expiry : </b>{{selectedFilteredContractData.expirationDate}}</div><br>
           <div>
             <button (click)="generateReport()">Generate Report<mat-icon class="chartIcon">insert_chart</mat-icon></button>
             <!-- <input mat-raised-button color="primary" type="button" value="Generate Report" (click)="generateReport()"> -->
