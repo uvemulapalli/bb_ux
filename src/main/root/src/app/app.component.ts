@@ -201,6 +201,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           let pricingRequests: Array<any> = [];
           blocksholesData.forEach((element: any) => {
             this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
+            this.chart.render();
             pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot));
           });
           this.sendPricingRequestForScreen3(pricingRequests);
@@ -574,6 +575,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           values.forEach((value: any) => {
             if (value) {
               this.chartOptions.data[1].dataPoints.push({x: value.spotPrice, y: value.predictedPrice});
+              this.chart.render();
             }
           });
         }
@@ -581,7 +583,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     console.log('chart options');
     console.log(this.chartOptions);
-    this.chart.render();
+    //this.chart.render();
     this.showLoading = false;
   }
 
@@ -601,7 +603,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     animationEnabled: true,
     theme: "light2",
     title:{
-      text: "Blocksholes vs Actual"
+      text: "Blocksholes vs Differential Model",
+      fontSize: 25,
+      fontColor: "#7F00FF",
     },
     axisX:{
       title: "Spot Prices"
@@ -613,18 +617,20 @@ export class AppComponent implements OnInit, AfterViewInit {
       shared: true
     },
     legend: {
-    cursor: "pointer",
-    itemclick: function (e: any) {
-      if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-        e.dataSeries.visible = false;
-      } else {
-        e.dataSeries.visible = true;
+      cursor: "pointer",
+      itemclick: function (e: any) {
+        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+          e.dataSeries.visible = false;
+        } else {
+          e.dataSeries.visible = true;
+        }
+        e.chart.render();
       }
-      e.chart.render();
-    }
     },
     data: [{
     type: "line",
+    lineColor: "#FF5733",
+    legendMarkerType: "square",
     showInLegend: true,
     name: "Blocksholes Price",
     dataPoints: [
@@ -635,6 +641,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       ]
     }, {
     type: "line",
+    lineColor: "#FFC300", // #FF5733, #FFC300
+    legendMarkerType: "square",
     showInLegend: true,
     name: "Predicted Price",
     dataPoints: [
