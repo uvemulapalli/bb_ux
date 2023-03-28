@@ -144,7 +144,7 @@
           <div><b>Volatility : </b>{{selectedFilteredContractData.volatility}}</div><br>
           <div><b>Expiry : </b>{{selectedFilteredContractData.expirationDate}}</div><br>
           <div>
-            <button (click)="generateReport()">Generate Report<mat-icon class="chartIcon">insert_chart</mat-icon></button>
+            <button mat-raised-button color="primary" (click)="generateReport()" style="color: blue;">Generate Report<mat-icon class="chartIcon">insert_chart</mat-icon></button>
             <!-- <input mat-raised-button color="primary" type="button" value="Generate Report" (click)="generateReport()"> -->
           </div>
         </div>
