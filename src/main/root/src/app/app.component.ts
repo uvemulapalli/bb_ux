@@ -601,7 +601,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     animationEnabled: true,
     theme: "light2",
     title:{
-      text: "Blocksholes vs Actual"
+      text: "Blocksholes vs Differential Model",
+      fontSize: 25,
+      fontColor: "#7F00FF",
     },
     axisX:{
       title: "Spot Prices"
@@ -625,6 +627,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     },
     data: [{
     type: "line",
+    lineColor: "#FFC300",
     showInLegend: true,
     name: "Blocksholes Price",
     dataPoints: [
@@ -635,6 +638,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       ]
     }, {
     type: "line",
+    lineColor: "#FF5733",
     showInLegend: true,
     name: "Predicted Price",
     dataPoints: [
