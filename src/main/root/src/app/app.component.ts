@@ -130,6 +130,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const tab = event.tab.textLabel;
     // console.log(tab);
     if (tab === this.tab1Title) {
+      this.showLoading = true;
       this.dataSource = undefined;
       this.displayTab1 = true;
       this.displayTab2 = false;
@@ -139,6 +140,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.resetTab2();
     }
     if (tab === this.tab2Title) {
+      this.showLoading = false;
       this.dataSource = undefined;
       this.displayTab1 = false;
       this.displayTab2 = true;
@@ -146,6 +148,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.displayTab3 = false;
     }
     if (tab === this.tab3Title) {
+      this.showLoading = false;
       this.dataSource = undefined;
       this.displayTab1 = false;
       this.displayTab2 = false;
@@ -191,13 +194,13 @@ export class AppComponent implements OnInit, AfterViewInit {
           var blocksholesData: any = event.body.data[0].training_data;
           console.log(blocksholesData);
           this.chartOptions.data[0].dataPoints = [];
+          this.chartOptions.data[1].dataPoints = [];
+          let pricingRequests: Array<any> = [];
           blocksholesData.forEach((element: any) => {
             this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.price});
+            pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot));
           });
-          console.log('chart options');
-          console.log(this.chartOptions);
-          this.chart.render();
-          this.showLoading = false;
+          this.sendPricingRequestForScreen3(pricingRequests);
         }
       },
       error: (err: any) => {
@@ -229,19 +232,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   public showSelectedContract(index:number):void {
     console.log(this.filteredContractData[index]);
     this.selectedFilteredContractData = this.filteredContractData[index];
-    // var selectedContract = this.dataDisplayResponseType.dataDisplayResponse.filter((value:any) => {
-    //   if (value.contractSymbol === contractId) {
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // });
   }
 
   public loadInstruments(): void {
     this.uploadService.loadAllActiveInstruments().subscribe({
       next: (event: any) => {
-        
         if (event instanceof HttpResponse) {
           this.dataDisplayResponseType = event.body;
           if (this.dataDisplayResponseType.errorMessage) {
@@ -510,6 +505,23 @@ export class AppComponent implements OnInit, AfterViewInit {
     return pricingRequest;
   }
 
+  private sendPricingRequestForScreen3(requestBody: any): void {
+    this.uploadService.sendPricingRequest(requestBody).subscribe({
+    // this.uploadService.sendPricingRequestFromJson().subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          this.pricingResponseType = event.body;
+        } else {
+          this.pricingResponseType = event;
+        }
+        this.handlePricingResponseForSingleRequestScreen3(this.pricingResponseType);
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+  }
+
   private sendPricingRequestForScreen2(requestBody: any): void {
     this.uploadService.sendPricingRequest(requestBody).subscribe({
     // this.uploadService.sendPricingRequestFromJson().subscribe({
@@ -545,6 +557,28 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
+
+  private handlePricingResponseForSingleRequestScreen3(pricingResponseType: any) {
+    var responses: PricingResponseType[] = pricingResponseType.data;
+    if (Array.isArray(responses)) {
+      console.log('Pricing Responses - ' + JSON.stringify(responses));
+      responses.forEach((response: any) => {
+        var values: Value[] = response.values;
+        // console.log('values - ' + JSON.stringify(values));
+        if (Array.isArray(values)) {
+          values.forEach((value: any) => {
+            if (value) {
+              this.chartOptions.data[1].dataPoints.push({x: value.spotPrice, y: value.predictedPrice});
+            }
+          });
+        }
+      });
+    }
+    console.log('chart options');
+    console.log(this.chartOptions);
+    this.chart.render();
+    this.showLoading = false;
   }
 
   private trackInstrumentProgress(message: string) {
