@@ -132,7 +132,7 @@
 <div *ngIf="displayTab3" class="displayTab3">
   <div class="tab3Layout">
     <div>
-        <input type="text" [(ngModel)]="userSearchText" (keyup)="filterData()">
+        <input type="text" [(ngModel)]="userSearchText" (keyup)="filterData()" style="border-radius: 10px">
         <ul class="filterdListItems" >
           <li *ngFor="let item of filteredContractData;let tempIndex = index" (click)="showSelectedContract(tempIndex)">{{item.contractSymbol}}</li>
         </ul>
