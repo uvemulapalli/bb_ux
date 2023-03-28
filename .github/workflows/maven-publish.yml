@@ -24,3 +24,15 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Log in to Docker Hub
+      env:
+        DOCKER_USERNAME: "tanulsangal"
+        DOCKER_PASSWORD: "abcd@1234"
+      run: docker login -u tanulsangal -p abcd@1234
+
+    - name: Build Docker image
+      run: docker build . --file Dockerfile --tag tanulsangal/pricingui:latest
+    - name: Tag the image to latest
+      run: docker tag tanulsangal/pricingui:latest tanulsangal/pricingui:latest
+    - name: Image push
+      run: docker push tanulsangal/pricingui:latest
