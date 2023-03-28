@@ -201,7 +201,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           let pricingRequests: Array<any> = [];
           blocksholesData.forEach((element: any) => {
             this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
-            this.chart.render();
+            // this.chart.render();
             pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot));
           });
           this.sendPricingRequestForScreen3(pricingRequests);
@@ -217,11 +217,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   public filterData():void {
     console.log("change happend");
     console.log(this.userSearchText);
-    this.chart.render();
+    // this.chart.render();
     if (this.userSearchText.length >= 3) {
       this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse.filter((value:any) => {
         console.log(value.contractSymbol)
-        if (value.contractSymbol.match(this.userSearchText)) {
+        if (value.contractSymbol.toLowerCase().match(this.userSearchText.toLowerCase())) {
           return true;
         } else {
           return false;
@@ -575,7 +575,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           values.forEach((value: any) => {
             if (value) {
               this.chartOptions.data[1].dataPoints.push({x: value.spotPrice, y: value.predictedPrice});
-              this.chart.render();
+              // this.chart.render();
             }
           });
         }
@@ -583,7 +583,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     console.log('chart options');
     console.log(this.chartOptions);
-    //this.chart.render();
+    this.chart.render();
     this.showLoading = false;
   }
 
@@ -605,13 +605,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     title:{
       text: "Blocksholes vs Differential Model",
       fontSize: 25,
-      fontColor: "#7F00FF",
+      // fontColor: "#7F00FF",
     },
     axisX:{
       title: "Spot Prices"
     },
     axisY: {
-      title: "Predicted Prices"
+      title: "Model Prices"
     },
     toolTip: {
       shared: true
@@ -629,8 +629,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     },
     data: [{
     type: "line",
-    lineColor: "#FF5733",
-    legendMarkerType: "square",
+    // lineColor: "#FF5733",
+    // legendMarkerType: "square",
     showInLegend: true,
     name: "Blocksholes Price",
     dataPoints: [
@@ -641,8 +641,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       ]
     }, {
     type: "line",
-    lineColor: "#FFC300", // #FF5733, #FFC300
-    legendMarkerType: "square",
+    // lineColor: "#FFC300", // #FF5733, #FFC300
+    // legendMarkerType: "square",
     showInLegend: true,
     name: "Predicted Price",
     dataPoints: [
