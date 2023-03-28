@@ -60,7 +60,7 @@ export class FileUploadService {
   }
 
 	generateReport(requestBody: any): Observable<HttpEvent<any>> {
-    const req = new HttpRequest('POST', `${this.baseUrlForGeneratingReport}/train/GetTrainingSetForInstruments`, requestBody, {
+    const req = new HttpRequest('POST', `${this.baseUrlForGeneratingReport}/train/generateTestSet`, requestBody, {
       headers : new HttpHeaders({"Content-Type": "application/json"}),
       reportProgress: true,
       responseType: 'json'

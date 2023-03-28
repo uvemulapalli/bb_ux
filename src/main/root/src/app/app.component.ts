@@ -187,17 +187,17 @@ export class AppComponent implements OnInit, AfterViewInit {
       "expiry": expiry.toString()
     }];
     //console.log(requestBody);
-    this.uploadService.generateTrainingSet(requestBody).subscribe({
+    this.uploadService.generateReport(requestBody).subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
           // console.log('event - ' + JSON.stringify(event));
-          var blocksholesData: any = event.body.data[0].training_data;
+          var blocksholesData: any = event.body.data[0].test_data;
           console.log(blocksholesData);
           this.chartOptions.data[0].dataPoints = [];
           this.chartOptions.data[1].dataPoints = [];
           let pricingRequests: Array<any> = [];
           blocksholesData.forEach((element: any) => {
-            this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.price});
+            this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
             pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot));
           });
           this.sendPricingRequestForScreen3(pricingRequests);
