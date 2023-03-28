@@ -228,8 +228,8 @@ mat-cell {
 
 .chartIcon {
   position: relative;
-    top: 4px;
-    font-size: 31px;
+  top: 0px;
+  font-size: 31px;
 }
 
 .maskBlock {
