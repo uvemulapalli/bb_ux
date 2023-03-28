@@ -63,6 +63,11 @@ export class DataPoint {
 
 export class AppComponent implements OnInit, AfterViewInit {
 
+
+  public showLoading:boolean = true;
+  public selectedFilteredContractData:DataDisplayResponse = new DataDisplayResponse();
+  public userSearchText:string = '';
+  public filteredContractData:any = [];
   title = 'Derivative Price';
 
   tab1Title = 'Simulation';
@@ -125,6 +130,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const tab = event.tab.textLabel;
     // console.log(tab);
     if (tab === this.tab1Title) {
+      this.showLoading = true;
       this.dataSource = undefined;
       this.displayTab1 = true;
       this.displayTab2 = false;
@@ -134,6 +140,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.resetTab2();
     }
     if (tab === this.tab2Title) {
+      this.showLoading = false;
       this.dataSource = undefined;
       this.displayTab1 = false;
       this.displayTab2 = true;
@@ -141,6 +148,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.displayTab3 = false;
     }
     if (tab === this.tab3Title) {
+      this.chartOptions.data[0].dataPoints = [];
+      this.chartOptions.data[1].dataPoints = [];
+      this.showLoading = false;
       this.dataSource = undefined;
       this.displayTab1 = false;
       this.displayTab2 = false;
@@ -148,7 +158,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.instrumentProgress = '';
       this.displayTab3 = true;
       this.resetTab2();
-      console.log('dataDisplayResponse - ' + this.dataDisplayResponseType.dataDisplayResponse);
+      this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse;
     }
   }
 
@@ -164,7 +174,69 @@ export class AppComponent implements OnInit, AfterViewInit {
                                   });
   }
 
+  public generateReport():void {
+    this.showLoading = true;
+    this.chartOptions.data[0].dataPoints = [];
+    this.chartOptions.data[1].dataPoints = [];
+    this.chart.render();
+    //selectedFilteredContractData
+    var expiry: any = '';
+    if(this.selectedFilteredContractData.expirationDate) {
+      expiry = this.datepipe.transform(new Date(this.selectedFilteredContractData.expirationDate), 'yyyy-MM-dd');
+    }
+    let requestBody = [{
+      "ticker": this.selectedFilteredContractData.contractSymbol,
+      "strikeprice": this.selectedFilteredContractData.strikePrice.toString(),
+      "spotprice": this.selectedFilteredContractData.spotPrice.toString(),
+      "volatility": this.selectedFilteredContractData.volatility.toString(),
+      "expiry": expiry.toString()
+    }];
+    //console.log(requestBody);
+    this.uploadService.generateReport(requestBody).subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          // console.log('event - ' + JSON.stringify(event));
+          var blocksholesData: any = event.body.data[0].test_data;
+          console.log(blocksholesData);
+          let pricingRequests: Array<any> = [];
+          blocksholesData.forEach((element: any) => {
+            this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
+            pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot));
+          });
+          this.sendPricingRequestForScreen3(pricingRequests);
+        }
+      },
+      error: (err: any) => {
+        this.showLoading = false;
+        console.log(err);
+      }
+    });
+  }
 
+  public filterData():void {
+    console.log("change happend");
+    console.log(this.userSearchText);
+    this.chart.render();
+    if (this.userSearchText.length >= 3) {
+      this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse.filter((value:any) => {
+        console.log(value.contractSymbol)
+        if (value.contractSymbol.match(this.userSearchText)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      console.log("this.filteredContractData")
+      console.log(this.filteredContractData)
+    } else if (this.userSearchText.length == 0) {
+      this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse
+    }
+  }
+
+  public showSelectedContract(index:number):void {
+    console.log(this.filteredContractData[index]);
+    this.selectedFilteredContractData = this.filteredContractData[index];
+  }
 
   public loadInstruments(): void {
     this.uploadService.loadAllActiveInstruments().subscribe({
@@ -185,9 +257,11 @@ export class AppComponent implements OnInit, AfterViewInit {
               element['valid'] = 0;
             });
           }
+          this.showLoading = false;
         }
       },
       error: (err: any) => {
+        this.showLoading = false;
         console.log(err);
         if (err.error && err.error.message) {
           this.message = err.error.message;
@@ -435,6 +509,23 @@ export class AppComponent implements OnInit, AfterViewInit {
     return pricingRequest;
   }
 
+  private sendPricingRequestForScreen3(requestBody: any): void {
+    this.uploadService.sendPricingRequest(requestBody).subscribe({
+    // this.uploadService.sendPricingRequestFromJson().subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          this.pricingResponseType = event.body;
+        } else {
+          this.pricingResponseType = event;
+        }
+        this.handlePricingResponseForSingleRequestScreen3(this.pricingResponseType);
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+  }
+
   private sendPricingRequestForScreen2(requestBody: any): void {
     this.uploadService.sendPricingRequest(requestBody).subscribe({
     // this.uploadService.sendPricingRequestFromJson().subscribe({
@@ -470,6 +561,28 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
+
+  private handlePricingResponseForSingleRequestScreen3(pricingResponseType: any) {
+    var responses: PricingResponseType[] = pricingResponseType.data;
+    if (Array.isArray(responses)) {
+      console.log('Pricing Responses - ' + JSON.stringify(responses));
+      responses.forEach((response: any) => {
+        var values: Value[] = response.values;
+        // console.log('values - ' + JSON.stringify(values));
+        if (Array.isArray(values)) {
+          values.forEach((value: any) => {
+            if (value) {
+              this.chartOptions.data[1].dataPoints.push({x: value.spotPrice, y: value.predictedPrice});
+            }
+          });
+        }
+      });
+    }
+    console.log('chart options');
+    console.log(this.chartOptions);
+    this.chart.render();
+    this.showLoading = false;
   }
 
   private trackInstrumentProgress(message: string) {
@@ -515,11 +628,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     showInLegend: true,
     name: "Blocksholes Price",
     dataPoints: [
-      { x: 1.11, y: 0.391 },
-      { x: 1.12, y: 0.401 },
+      { x: 1.11, y: 0.39 },
+      { x: 1.12, y: 0.4 },
       { x: 1.13, y: 0.41 },
-      { x: 1.61, y: 0.41 }
-    ]
+      { x: 1.61, y: 0.38 }
+      ]
     }, {
     type: "line",
     showInLegend: true,
@@ -531,5 +644,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       { x: 1.61, y: 0.38 }
     ]
     }]
+  }
+  public getChartInstance(event: any):void {
+    console.log("getChartInstance")
+    console.log(event)
+    this.chart = event;
   }
 }

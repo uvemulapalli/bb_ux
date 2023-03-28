@@ -10,11 +10,13 @@ export class FileUploadService {
 
 	private baseUrlForInitInstruments = 'http://localhost:5080';
 
-	private baseUrlForInstrumentPricing = 'http://a8216942522c.mylabserver.com:8090';
+	private baseUrlForInstrumentPricing = 'http://20.251.49.126:8090';
 
 	private baseUrlForGetOption = 'http://137.117.43.12:5000';
 
 	private baseUrlForGeneratingTrainingSet = 'http://137.117.43.12:5001';
+
+	private baseUrlForGeneratingReport = 'http://137.117.43.12:5001';
 
 	constructor(private httpClient: HttpClient) {}
 
@@ -50,6 +52,15 @@ export class FileUploadService {
 
 	generateTrainingSet(requestBody: any): Observable<HttpEvent<any>> {
     const req = new HttpRequest('POST', `${this.baseUrlForGeneratingTrainingSet}/train/GetTrainingSetForInstruments`, requestBody, {
+      headers : new HttpHeaders({"Content-Type": "application/json"}),
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.httpClient.request(req);
+  }
+
+	generateReport(requestBody: any): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', `${this.baseUrlForGeneratingReport}/train/generateTestSet`, requestBody, {
       headers : new HttpHeaders({"Content-Type": "application/json"}),
       reportProgress: true,
       responseType: 'json'
