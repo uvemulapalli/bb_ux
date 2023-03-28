@@ -1,3 +1,7 @@
+<div class="maskBlock" *ngIf="showLoading">
+  <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" alt="">
+</div>
+
 <h1 class="spatitle">{{title}}</h1><br>
 <mat-tab-group (selectedTabChange)="onChange($event)">
   <mat-tab label="{{tab1Title}}">
@@ -140,7 +144,8 @@
           <h4>Volatility : <span>{{selectedFilteredContractData.volatility}}</span></h4>
           <h4>Expiry : <span>{{selectedFilteredContractData.expirationDate}}</span></h4>
           <div>
-            <input mat-raised-button color="primary" type="button" value="Generate Report" (click)="generateReport()">
+            <button (click)="generateReport()">Generate Report<mat-icon class="chartIcon">insert_chart</mat-icon></button>
+            <!-- <input mat-raised-button color="primary" type="button" value="Generate Report" (click)="generateReport()"> -->
           </div>
         </div>
     </div>

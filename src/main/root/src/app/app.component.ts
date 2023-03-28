@@ -63,6 +63,8 @@ export class DataPoint {
 
 export class AppComponent implements OnInit, AfterViewInit {
 
+
+  public showLoading:boolean = true;
   public selectedFilteredContractData:DataDisplayResponse = new DataDisplayResponse();
   public userSearchText:string = '';
   public filteredContractData:any = [];
@@ -168,6 +170,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public generateReport():void {
+    this.showLoading = true;
     //selectedFilteredContractData
     var expiry: any = '';
     if(this.selectedFilteredContractData.expirationDate) {
@@ -194,9 +197,11 @@ export class AppComponent implements OnInit, AfterViewInit {
           console.log('chart options');
           console.log(this.chartOptions);
           this.chart.render();
+          this.showLoading = false;
         }
       },
       error: (err: any) => {
+        this.showLoading = false;
         console.log(err);
       }
     });
@@ -236,6 +241,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public loadInstruments(): void {
     this.uploadService.loadAllActiveInstruments().subscribe({
       next: (event: any) => {
+        
         if (event instanceof HttpResponse) {
           this.dataDisplayResponseType = event.body;
           if (this.dataDisplayResponseType.errorMessage) {
@@ -252,9 +258,11 @@ export class AppComponent implements OnInit, AfterViewInit {
               element['valid'] = 0;
             });
           }
+          this.showLoading = false;
         }
       },
       error: (err: any) => {
+        this.showLoading = false;
         console.log(err);
         if (err.error && err.error.message) {
           this.message = err.error.message;

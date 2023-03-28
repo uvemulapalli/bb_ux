@@ -223,3 +223,29 @@ mat-cell {
   background-color: #ccc;
   cursor: pointer;
 }
+
+.chartIcon {
+  position: relative;
+    top: 4px;
+    font-size: 31px;
+}
+
+.maskBlock {
+  position: absolute;
+  top: 30%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #ddd;
+  opacity: 0.4;
+  z-index: 5;
+}
+.maskBlock img {
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    left: 45%;
+    top: 30%;
+    z-index: 100;
+}
