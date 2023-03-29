@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 
 export class FileUploadService {
 
-	private baseUrlForInitInstruments = 'http://20.251.49.126:5080';
+	private baseUrlForInitInstruments = 'http://localhost:5080';
 
 	private baseUrlForInstrumentPricing = 'http://20.251.49.126:8090';
 

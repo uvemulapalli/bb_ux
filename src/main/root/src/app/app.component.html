@@ -132,7 +132,13 @@
 <div *ngIf="displayTab3" class="displayTab3">
   <div class="tab3Layout">
     <div>
-        <input type="text" [(ngModel)]="userSearchText" (keyup)="filterData()" style="border-radius: 10px"><br><br>
+        <input matInput type="text" [(ngModel)]="userSearchText" (keyup)="filterData()" style="border-radius: 10px">
+        <!-- <button class="clearFilter" *ngIf="userSearchText" matSuffix mat-icon-button aria-label="Clear" (click)="userSearchText=''"> -->
+          <div style="position:relative" *ngIf="userSearchText" (click)="clearUserSearchFilter();userSearchText=''">
+            <mat-icon class="matIconClose">close</mat-icon>
+          </div>
+          
+        <!-- </button><br><br> -->
         <ul class="filterdListItems" >
           <li *ngFor="let item of filteredContractData;let tempIndex = index" (click)="showSelectedContract(tempIndex)">{{item.contractSymbol}}</li>
         </ul>

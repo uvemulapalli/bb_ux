@@ -174,6 +174,11 @@ export class AppComponent implements OnInit, AfterViewInit {
                                   });
   }
 
+  public clearUserSearchFilter():void {
+    this.userSearchText = '';
+    this.filterData();
+  }
+  
   public generateReport():void {
     this.showLoading = true;
     this.chartOptions.data[0].dataPoints = [];
@@ -231,7 +236,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       // console.log("this.filteredContractData")
       // console.log(this.filteredContractData)
     } else if (this.userSearchText.length == 0) {
-      this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse
+      this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse;
     }
   }
 
@@ -657,8 +662,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     }]
   }
   public getChartInstance(event: any):void {
-    console.log("getChartInstance")
-    console.log(event)
+    // console.log("getChartInstance")
+    // console.log(event)
     this.chart = event;
   }
 }
