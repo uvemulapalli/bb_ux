@@ -425,6 +425,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   newSpotPrice: number = 0;
   isSpotPriceSaved = false;
   predictedPrice: number = 0;
+  screen2Message: string = '';
 
   public saveDetails(form: any) {
     this.showLoading = true;
@@ -451,6 +452,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.trackInstrumentProgress('Added instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
                                         ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
                                         ', Volatility - ' + this.volatility);
+          this.showLoading = false;
+          this.screen2Message = 'Successfully added instrument.';
         }
         this.showLoading = false;
       },
@@ -487,6 +490,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.trackInstrumentProgress('Completed generating training set for : Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol +
                                                   ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
                                                   ', Volatility - ' + this.volatility);
+          this.screen2TrainngDataMessage = 'Successfully generated training set.';
+          this.isTrainingDataReady = true;
+          this.showLoading = false;
         }
         this.showLoading = false;
       },
@@ -502,6 +508,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
+  screen2TrainngDataMessage: any = '';
+
+  isTrainingDataReady: boolean = false;
+
   public resetTab2() {
     this.addInstrumentform = this.formBuilder.group({
           contractId: [null, [Validators.required]],
@@ -514,6 +524,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.isSpotPriceSaved = false;
     this.spotPrice = 0;
     this.instrumentProgress = '';
+    this.predictedPrice = 0;
+    this.screen2Message = '';
+    this.screen2TrainngDataMessage = '';
+    this.isTrainingDataReady = false;
   }
 
   public saveSpotPrice(spotPriceForm: any) {
@@ -580,6 +594,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (value) {
               if(Number(this.newSpotPrice) === value.spotPrice) {
                  this.predictedPrice = value.predictedPrice;
+                 this.isSpotPriceSaved = true;
               }
             }
           });

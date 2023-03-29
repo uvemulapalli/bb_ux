@@ -76,6 +76,7 @@
               <mat-error *ngIf="addInstrumentform.controls['contractId'].errors?.['required']" class="alert">Contract ID is required</mat-error>
             </mat-form-field>
           </div>
+          <span style="float: left; color:green;">{{screen2Message}}</span>
           <div class="addInstrumentButton">
             <button mat-raised-button color="primary" type="submit" [disabled]="!addInstrumentform.valid || isContractSaved">Add</button>
           </div>
@@ -91,8 +92,9 @@
           <div><b>Expiration Date : </b>{{expirationDate}}</div><br>
           <div><b>Volatility : </b>{{volatility}}</div><br>
         </mat-card-content>
+        <span style="float: left; color:green;margin-left: 15px;">{{screen2TrainngDataMessage}}</span>
         <div class="generateSetButton">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!isContractSaved" (click)="generateTrainingSet()">Generate Training Set</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isTrainingDataReady" (click)="generateTrainingSet()">Generate Training Set</button>
         </div>
       </mat-card>
     </div>
@@ -111,7 +113,7 @@
             <div class="generatePriceButton">
               <button mat-raised-button color="primary" type="submit" [disabled]="!spotPriceForm.valid">Generate Price</button>
             </div>
-            <div>
+            <div *ngIf="isSpotPriceSaved">
               Option/ Predicted Price: {{predictedPrice}}
             </div>
           </form>
