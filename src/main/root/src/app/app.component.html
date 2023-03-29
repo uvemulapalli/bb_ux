@@ -76,6 +76,7 @@
               <mat-error *ngIf="addInstrumentform.controls['contractId'].errors?.['required']" class="alert">Contract ID is required</mat-error>
             </mat-form-field>
           </div>
+          <span style="float: left; color:green;">{{screen2Message}}</span>
           <div class="addInstrumentButton">
             <button mat-raised-button color="primary" type="submit" [disabled]="!addInstrumentform.valid || isContractSaved">Add</button>
           </div>
@@ -85,15 +86,15 @@
     <div class="v1">
       <mat-card *ngIf="isContractSaved" class="instumentData">
         <mat-card-content>
-          <h3>Ticker : {{ticker}} | Contract ID: <span>{{contractSymbol}}</span></h3>
-          <h3>Strike Price : {{strikePrice}}  |  Spot Price : {{spotPrice}}</h3>
-          <h3>
-            <div><mat-label>Expiration Date :</mat-label> {{expirationDate}} </div><br>
-            <div><mat-label>Volatility :</mat-label> {{volatility}} </div><br>
-          </h3>
+          <br><div><b>Ticker : </b>{{ticker}} | <b>Contract ID: </b>{{contractSymbol}}</div><br>
+          <div><b>Strike Price : </b>{{strikePrice}}</div><br>
+          <div><b>Spot Price: </b>{{spotPrice}}</div><br>
+          <div><b>Expiration Date : </b>{{expirationDate}}</div><br>
+          <div><b>Volatility : </b>{{volatility}}</div><br>
         </mat-card-content>
+        <span style="float: left; color:green;margin-left: 15px;">{{screen2TrainngDataMessage}}</span>
         <div class="generateSetButton">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!isContractSaved" (click)="generateTrainingSet()">Generate Training Set</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isTrainingDataReady" (click)="generateTrainingSet()">Generate Training Set</button>
         </div>
       </mat-card>
     </div>
@@ -112,7 +113,7 @@
             <div class="generatePriceButton">
               <button mat-raised-button color="primary" type="submit" [disabled]="!spotPriceForm.valid">Generate Price</button>
             </div>
-            <div>
+            <div *ngIf="isSpotPriceSaved">
               Option/ Predicted Price: {{predictedPrice}}
             </div>
           </form>
