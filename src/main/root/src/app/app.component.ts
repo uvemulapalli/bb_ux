@@ -427,6 +427,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   predictedPrice: number = 0;
 
   public saveDetails(form: any) {
+    this.showLoading = true;
     this.ticker = this.addInstrumentform.get('ticker')?.value;
     this.contractSymbol = this.addInstrumentform.get('contractId')?.value;
     this.trackInstrumentProgress('Adding instrument: Ticker - ' + this.ticker + ', Contract ID - ' + this.contractSymbol);
@@ -451,6 +452,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                                         ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
                                         ', Volatility - ' + this.volatility);
         }
+        this.showLoading = false;
       },
       error: (err: any) => {
         console.log(err);
@@ -459,11 +461,13 @@ export class AppComponent implements OnInit, AfterViewInit {
                                       ', Volatility - ' + this.volatility);
 
         this.isContractSaved = false;
+        this.showLoading = false;
       }
     });
   }
 
   public generateTrainingSet() {
+    this.showLoading = true;
     var requestBody: Array<any> = [];
     const request:JSON = <JSON><unknown>{
             "ticker": this.contractSymbol,
@@ -484,6 +488,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                                                   ', Strike Price - ' + this.strikePrice + ', Expiration Date - ' + this.expirationDate +
                                                   ', Volatility - ' + this.volatility);
         }
+        this.showLoading = false;
       },
       error: (err: any) => {
         console.log(err);
@@ -492,6 +497,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                                       ', Volatility - ' + this.volatility);
 
         this.isContractSaved = false;
+        this.showLoading = false;
       }
     });
   }
