@@ -28,7 +28,7 @@ export class DataDisplayResponse {
 
 export class PricingRequest {
   instrumentId: string = '';
-  spotprice: Array<any> = [];
+  spotprice: any = '';
 }
 
 export class PricingResponseType {
@@ -68,7 +68,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public selectedFilteredContractData:DataDisplayResponse = new DataDisplayResponse();
   public userSearchText:string = '';
   public filteredContractData:any = [];
-  title = 'Derivative Price';
+  title = 'Derivatives Pricing';
 
   tab1Title = 'Simulation';
 
@@ -181,7 +181,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.selectedFilteredContractData = new DataDisplayResponse();
     this.chartOptions.data[0].dataPoints = [];
     this.chartOptions.data[1].dataPoints = [];
-    this.chart.render();
+    if(this.chart && this.displayTab3) {
+      this.chart.render();
+    }
+  }
+
+  private calculateDiff(dateSent: any){
+     let currentDate = new Date();
+     dateSent = new Date(dateSent);
+     return Math.floor((Date.UTC(dateSent.getFullYear(), dateSent.getMonth(), dateSent.getDate()) - Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())) /(1000 * 60 * 60 * 24));
   }
 
   public generateReport():void {
@@ -193,36 +201,31 @@ export class AppComponent implements OnInit, AfterViewInit {
     var expiry: any = '';
     if(this.selectedFilteredContractData.expirationDate) {
       expiry = this.datepipe.transform(new Date(this.selectedFilteredContractData.expirationDate), 'yyyy-MM-dd');
+      var differenceInYrs = this.calculateDiff(this.selectedFilteredContractData.expirationDate) / 365;
+      console.log("Difference In Yrs. - " + differenceInYrs);
+      expiry = 1 + differenceInYrs;
     }
-    let requestBody = [{
-      "ticker": this.selectedFilteredContractData.contractSymbol,
-      "strikeprice": this.selectedFilteredContractData.strikePrice.toString(),
-      "spotprice": this.selectedFilteredContractData.spotPrice.toString(),
+
+    var strike: any = '';
+    if(this.selectedFilteredContractData.strikePrice) {
+      strike = this.selectedFilteredContractData.strikePrice / 100;
+    }
+
+    var spot: any = '';
+    if(this.selectedFilteredContractData.spotPrice){
+      spot = this.selectedFilteredContractData.spotPrice / 100;
+    }
+
+    let requestBody = {
+      "instrumentId": this.selectedFilteredContractData.contractSymbol,
+      "strikeprice": strike.toString(),
+      "spotprice": spot,
       "volatility": this.selectedFilteredContractData.volatility.toString(),
       "expiry": expiry.toString()
-    }];
+    };
     //console.log(requestBody);
-    this.uploadService.generateReport(requestBody).subscribe({
-      next: (event: any) => {
-        if (event instanceof HttpResponse) {
-          // console.log('event - ' + JSON.stringify(event));
-          var blocksholesData: any = event.body.data[0].test_data;
-          console.log(blocksholesData);
-          let pricingRequests: Array<any> = [];
-          blocksholesData.forEach((element: any) => {
-            this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
-            // this.chart.render();
-            pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot * 100));
-          });
-          console.log(pricingRequests);
-          this.sendPricingRequestForScreen3(pricingRequests);
-        }
-      },
-      error: (err: any) => {
-        this.showLoading = false;
-        console.log(err);
-      }
-    });
+    // this.sendPricingRequestForScreen3(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
+    this.sendPricingRequestForScreen3(requestBody);
   }
 
   public filterData():void {
@@ -246,7 +249,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public showSelectedContract(index:number):void {
-    console.log(this.filteredContractData[index]);
+    // console.log(this.filteredContractData[index]);
     this.selectedFilteredContractData = this.filteredContractData[index];
     this.userSearchText = this.selectedFilteredContractData.contractSymbol;
     this.filterData();
@@ -510,9 +513,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   public saveSpotPrice(spotPriceForm: any) {
     this.newSpotPrice = this.spotPriceForm.get('spotPrice')?.value;
     this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
-    let pricingRequests: Array<any> = [];
-    pricingRequests.push(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice));
-    this.sendPricingRequestForScreen2(pricingRequests);
+    /* let pricingRequests: Array<any> = [];
+    pricingRequests.push(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice)); */
+    this.sendPricingRequestForScreen2(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice));
     this.isSpotPriceSaved = true;
     this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
   }
@@ -520,12 +523,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   private createSinglePricingRequest(contractSymbol: any, spotPrice: any) {
     const pricingRequest: PricingRequest = new PricingRequest();
     pricingRequest.instrumentId = contractSymbol;
-    pricingRequest.spotprice = [Number(spotPrice)];
+    pricingRequest.spotprice = Number(spotPrice);
     return pricingRequest;
   }
 
   private sendPricingRequestForScreen3(requestBody: any): void {
-    this.uploadService.sendPricingRequest(requestBody).subscribe({
+    this.uploadService.sendPricingRequestForScreen3(requestBody).subscribe({
     // this.uploadService.sendPricingRequestFromJson().subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
@@ -537,12 +540,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       },
       error: (err: any) => {
         console.log(err);
+        this.showLoading = false;
       }
     });
   }
 
   private sendPricingRequestForScreen2(requestBody: any): void {
-    this.uploadService.sendPricingRequest(requestBody).subscribe({
+    this.uploadService.sendPricingRequestForScreen2(requestBody).subscribe({
     // this.uploadService.sendPricingRequestFromJson().subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
@@ -579,27 +583,25 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private handlePricingResponseForSingleRequestScreen3(pricingResponseType: any) {
-    var responses: PricingResponseType[] = pricingResponseType.data;
+    var responses: PricingResponseType[] = pricingResponseType;
     if (Array.isArray(responses)) {
       console.log('Pricing Responses - ' + JSON.stringify(responses));
       responses.forEach((response: any) => {
-        var values: Value[] = response.values;
-        // console.log('values - ' + JSON.stringify(values));
-        if (Array.isArray(values)) {
-          values.forEach((value: any) => {
-            if (value) {
-              this.chartOptions.data[1].dataPoints.push({x: value.spotPrice/100, y: value.predictedPrice});
-              // this.chartOptions.data[1].dataPoints.push({x:value.predictedPrice , y: value.spotPrice/100});
-              // this.chart.render();
-            }
-          });
+        var value: any = response;
+        // console.log('value - ' + JSON.stringify(value));
+        if (value) {
+          this.chartOptions.data[0].dataPoints.push({x: value.spot * 100, y: value.bsprice * 100});
+          this.chart.render();
+          this.chartOptions.data[1].dataPoints.push({x: value.spot * 100, y: value.modelprice * 100});
+          this.chart.render();
         }
       });
+      this.showLoading = false;
     }
+    // this.showLoading = false;
     // console.log('chart options');
     // console.log(this.chartOptions);
     this.chart.render();
-    this.showLoading = false;
   }
 
   private trackInstrumentProgress(message: string) {
@@ -644,7 +646,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     },
     data: [{
     type: "line",
-    // lineColor: "#FF5733",
+    lineColor: "blue",
     // legendMarkerType: "square",
     showInLegend: true,
     name: "Blocksholes Price",
@@ -656,7 +658,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       ]
     }, {
     type: "line",
-    // lineColor: "#FFC300", // #FF5733, #FFC300
+    lineDashType: "dash",
+    lineThickness: 5,
+    lineColor: "red", // #FF5733, #FFC300
     // legendMarkerType: "square",
     showInLegend: true,
     name: "Predicted Price",

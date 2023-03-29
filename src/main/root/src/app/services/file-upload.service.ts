@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 
 export class FileUploadService {
 
-	private baseUrlForInitInstruments = 'http://20.251.49.126:5080';
+	private baseUrlForInitInstruments = 'http://localhost:5080';
 
 	private baseUrlForInstrumentPricing = 'http://20.251.49.126:8090';
 
@@ -30,6 +30,24 @@ export class FileUploadService {
 
 	sendPricingRequest(requestBody: any): Observable<HttpEvent<any>> {
     const req = new HttpRequest('POST', `${this.baseUrlForInstrumentPricing}/model/price/instruments`, requestBody, {
+      headers : new HttpHeaders({"Content-Type": "application/json"}),
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.httpClient.request(req);
+  }
+
+	sendPricingRequestForScreen2(requestBody: any): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', `${this.baseUrlForInstrumentPricing}/model/price/instrument`, requestBody, {
+      headers : new HttpHeaders({"Content-Type": "application/json"}),
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.httpClient.request(req);
+  }
+
+	sendPricingRequestForScreen3(requestBody: any): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', `${this.baseUrlForInstrumentPricing}/model/price/instrument1`, requestBody, {
       headers : new HttpHeaders({"Content-Type": "application/json"}),
       reportProgress: true,
       responseType: 'json'
