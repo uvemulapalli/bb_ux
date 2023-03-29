@@ -177,6 +177,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public clearUserSearchFilter():void {
     this.userSearchText = '';
     this.filterData();
+    this.selectedFilteredContractData = new DataDisplayResponse();
   }
   
   public generateReport():void {
