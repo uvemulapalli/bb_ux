@@ -28,15 +28,7 @@ export class DataDisplayResponse {
 
 export class PricingRequest {
   instrumentId: string = '';
-  spotprice: Array<any> = [];
-}
-
-export class PricingRequest1 {
-  ticker: string = '';
-  strikeprice: string = '';
-  spotprice: Number = 0;
-  volatility: string = '';
-  expiry: string = '';
+  spotprice: any = '';
 }
 
 export class PricingResponseType {
@@ -189,7 +181,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.selectedFilteredContractData = new DataDisplayResponse();
     this.chartOptions.data[0].dataPoints = [];
     this.chartOptions.data[1].dataPoints = [];
-    if(this.chart) {
+    if(this.chart && this.displayTab3) {
       this.chart.render();
     }
   }
@@ -210,7 +202,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if(this.selectedFilteredContractData.expirationDate) {
       expiry = this.datepipe.transform(new Date(this.selectedFilteredContractData.expirationDate), 'yyyy-MM-dd');
       var differenceInYrs = this.calculateDiff(this.selectedFilteredContractData.expirationDate) / 365;
-      console.log("difference - " + differenceInYrs);
+      console.log("Difference In Yrs. - " + differenceInYrs);
       expiry = 1 + differenceInYrs;
     }
 
@@ -225,7 +217,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     let requestBody = {
-      "ticker": this.selectedFilteredContractData.contractSymbol,
+      "instrumentId": this.selectedFilteredContractData.contractSymbol,
       "strikeprice": strike.toString(),
       "spotprice": spot,
       "volatility": this.selectedFilteredContractData.volatility.toString(),
@@ -234,30 +226,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     //console.log(requestBody);
     // this.sendPricingRequestForScreen3(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
     this.sendPricingRequestForScreen3(requestBody);
-    /* this.uploadService.generateReport(requestBody).subscribe({
-      next: (event: any) => {
-        if (event instanceof HttpResponse) {
-          // console.log('event - ' + JSON.stringify(event));
-          var blocksholesData: any = event.body.data[0].test_data;
-          console.log(blocksholesData);
-           *//* let pricingRequests: Array<any> = [];
-          blocksholesData.forEach((element: any) => {
-            this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
-            // this.chart.render();
-             *//*  *//* pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot / 100, element.strike,
-                                element.volatility, '1.04')); *//*  *//*
-            pricingRequests.push(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
-          });
-          console.log(pricingRequests); *//*
-          // this.sendPricingRequestForScreen3(pricingRequests);
-          this.sendPricingRequestForScreen3(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
-        }
-      },
-      error: (err: any) => {
-        this.showLoading = false;
-        console.log(err);
-      }
-    }); */
   }
 
   public filterData():void {
@@ -281,7 +249,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public showSelectedContract(index:number):void {
-    console.log(this.filteredContractData[index]);
+    // console.log(this.filteredContractData[index]);
     this.selectedFilteredContractData = this.filteredContractData[index];
     this.userSearchText = this.selectedFilteredContractData.contractSymbol;
     this.filterData();
@@ -545,29 +513,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   public saveSpotPrice(spotPriceForm: any) {
     this.newSpotPrice = this.spotPriceForm.get('spotPrice')?.value;
     this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
-    let pricingRequests: Array<any> = [];
-    pricingRequests.push(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice, '', '', ''));
-    this.sendPricingRequestForScreen2(pricingRequests);
+    /* let pricingRequests: Array<any> = [];
+    pricingRequests.push(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice)); */
+    this.sendPricingRequestForScreen2(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice));
     this.isSpotPriceSaved = true;
     this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
   }
 
-  private createSinglePricingRequest(contractSymbol: any, spotPrice: any,
-      strikeprice: any, volatility: any, expiry: any) {
-    const pricingRequest: PricingRequest1 = new PricingRequest1();
-    pricingRequest.ticker = contractSymbol;
+  private createSinglePricingRequest(contractSymbol: any, spotPrice: any) {
+    const pricingRequest: PricingRequest = new PricingRequest();
+    pricingRequest.instrumentId = contractSymbol;
     pricingRequest.spotprice = Number(spotPrice);
-    if(strikeprice) {
-      pricingRequest.strikeprice = strikeprice;
-    }
-
-    if(volatility) {
-      pricingRequest.volatility = volatility;
-    }
-
-    if(expiry) {
-      pricingRequest.expiry = expiry;
-    }
     return pricingRequest;
   }
 
@@ -590,7 +546,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private sendPricingRequestForScreen2(requestBody: any): void {
-    this.uploadService.sendPricingRequest(requestBody).subscribe({
+    this.uploadService.sendPricingRequestForScreen2(requestBody).subscribe({
     // this.uploadService.sendPricingRequestFromJson().subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
@@ -632,7 +588,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       console.log('Pricing Responses - ' + JSON.stringify(responses));
       responses.forEach((response: any) => {
         var value: any = response;
-        console.log('value - ' + JSON.stringify(value));
+        // console.log('value - ' + JSON.stringify(value));
         if (value) {
           this.chartOptions.data[0].dataPoints.push({x: value.spot * 100, y: value.bsprice * 100});
           this.chart.render();

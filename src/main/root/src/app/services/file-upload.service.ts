@@ -37,6 +37,15 @@ export class FileUploadService {
     return this.httpClient.request(req);
   }
 
+	sendPricingRequestForScreen2(requestBody: any): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', `${this.baseUrlForInstrumentPricing}/model/price/instrument`, requestBody, {
+      headers : new HttpHeaders({"Content-Type": "application/json"}),
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.httpClient.request(req);
+  }
+
 	sendPricingRequestForScreen3(requestBody: any): Observable<HttpEvent<any>> {
     const req = new HttpRequest('POST', `${this.baseUrlForInstrumentPricing}/model/price/instrument1`, requestBody, {
       headers : new HttpHeaders({"Content-Type": "application/json"}),
