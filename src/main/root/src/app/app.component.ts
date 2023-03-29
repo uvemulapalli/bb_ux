@@ -189,7 +189,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.selectedFilteredContractData = new DataDisplayResponse();
     this.chartOptions.data[0].dataPoints = [];
     this.chartOptions.data[1].dataPoints = [];
-    // this.chart.render();
+    if(this.chart) {
+      this.chart.render();
+    }
   }
 
   public generateReport():void {
@@ -210,21 +212,22 @@ export class AppComponent implements OnInit, AfterViewInit {
       "expiry": expiry.toString()
     }];
     //console.log(requestBody);
-    this.uploadService.generateReport(requestBody).subscribe({
+    this.sendPricingRequestForScreen3(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
+    /* this.uploadService.generateReport(requestBody).subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
           // console.log('event - ' + JSON.stringify(event));
           var blocksholesData: any = event.body.data[0].test_data;
           console.log(blocksholesData);
-          /* let pricingRequests: Array<any> = [];
+           *//* let pricingRequests: Array<any> = [];
           blocksholesData.forEach((element: any) => {
             this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
             // this.chart.render();
-             *//* pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot / 100, element.strike,
-                                element.volatility, '1.04')); *//*
+             *//*  *//* pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot / 100, element.strike,
+                                element.volatility, '1.04')); *//*  *//*
             pricingRequests.push(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
           });
-          console.log(pricingRequests); */
+          console.log(pricingRequests); *//*
           // this.sendPricingRequestForScreen3(pricingRequests);
           this.sendPricingRequestForScreen3(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
         }
@@ -233,7 +236,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.showLoading = false;
         console.log(err);
       }
-    });
+    }); */
   }
 
   public filterData():void {
@@ -560,6 +563,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       },
       error: (err: any) => {
         console.log(err);
+        this.showLoading = false;
       }
     });
   }
@@ -610,16 +614,17 @@ export class AppComponent implements OnInit, AfterViewInit {
         console.log('value - ' + JSON.stringify(value));
         if (value) {
           this.chartOptions.data[0].dataPoints.push({x: value.spot * 100, y: value.bsprice * 100});
+          this.chart.render();
           this.chartOptions.data[1].dataPoints.push({x: value.spot * 100, y: value.modelprice * 100});
-          // this.chartOptions.data[1].dataPoints.push({x:value.predictedPrice , y: value.spotPrice/100});
           this.chart.render();
         }
       });
+      this.showLoading = false;
     }
+    // this.showLoading = false;
     // console.log('chart options');
     // console.log(this.chartOptions);
     this.chart.render();
-    this.showLoading = false;
   }
 
   private trackInstrumentProgress(message: string) {
