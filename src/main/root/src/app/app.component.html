@@ -137,7 +137,7 @@
           <div style="position:relative" *ngIf="userSearchText" (click)="clearUserSearchFilter();userSearchText=''">
             <mat-icon class="matIconClose">close</mat-icon>
           </div>
-          
+
         <!-- </button><br><br> -->
         <ul class="filterdListItems" >
           <li *ngFor="let item of filteredContractData;let tempIndex = index" (click)="showSelectedContract(tempIndex)">{{item.contractSymbol}}</li>
@@ -156,7 +156,7 @@
         </div>
     </div>
     <div>
-      <div>
+      <div style="margin-left:10%;">
         <canvasjs-chart [options]="chartOptions" (chartInstance)="getChartInstance($event)" [styles]="{width: '95%', height:'600px'}"></canvasjs-chart>
       </div>
     </div>
