@@ -179,6 +179,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.userSearchText = '';
     this.filterData();
     this.selectedFilteredContractData = new DataDisplayResponse();
+    this.chartOptions.data[0].dataPoints = [];
+    this.chartOptions.data[1].dataPoints = [];
+    this.chart.render();
   }
 
   public generateReport():void {
@@ -246,6 +249,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     console.log(this.filteredContractData[index]);
     this.selectedFilteredContractData = this.filteredContractData[index];
     this.userSearchText = this.selectedFilteredContractData.contractSymbol;
+    this.filterData();
+    this.generateReport();
   }
 
   public loadInstruments(): void {
