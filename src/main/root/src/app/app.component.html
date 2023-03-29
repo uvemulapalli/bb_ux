@@ -130,6 +130,7 @@
 </div>
 
 <div *ngIf="displayTab3" class="displayTab3">
+  <br><br>
   <div class="tab3Layout">
     <div>
         <input matInput type="text" [(ngModel)]="userSearchText" (keyup)="filterData()" style="border-radius: 10px">
@@ -137,7 +138,7 @@
           <div style="position:relative" *ngIf="userSearchText" (click)="clearUserSearchFilter();userSearchText=''">
             <mat-icon class="matIconClose">close</mat-icon>
           </div>
-          
+
         <!-- </button><br><br> -->
         <ul class="filterdListItems" >
           <li *ngFor="let item of filteredContractData;let tempIndex = index" (click)="showSelectedContract(tempIndex)">{{item.contractSymbol}}</li>
@@ -150,13 +151,13 @@
           <div><b>Volatility : </b>{{selectedFilteredContractData.volatility}}</div><br>
           <div><b>Expiry : </b>{{selectedFilteredContractData.expirationDate}}</div><br>
           <div>
-            <button mat-raised-button color="primary" (click)="generateReport()" style="color: blue;">Generate Report<mat-icon class="chartIcon">insert_chart</mat-icon></button>
+            <!--<button mat-raised-button color="primary" (click)="generateReport()" style="color: blue;">Generate Report<mat-icon class="chartIcon">insert_chart</mat-icon></button>-->
             <!-- <input mat-raised-button color="primary" type="button" value="Generate Report" (click)="generateReport()"> -->
           </div>
         </div>
     </div>
     <div>
-      <div>
+      <div style="margin-left:10%;">
         <canvasjs-chart [options]="chartOptions" (chartInstance)="getChartInstance($event)" [styles]="{width: '95%', height:'600px'}"></canvasjs-chart>
       </div>
     </div>
