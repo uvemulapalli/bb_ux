@@ -159,6 +159,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.displayTab3 = true;
       this.resetTab2();
       this.filteredContractData = this.dataDisplayResponseType.dataDisplayResponse;
+      this.clearUserSearchFilter();
     }
   }
 
@@ -179,7 +180,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.filterData();
     this.selectedFilteredContractData = new DataDisplayResponse();
   }
-  
+
   public generateReport():void {
     this.showLoading = true;
     this.chartOptions.data[0].dataPoints = [];
