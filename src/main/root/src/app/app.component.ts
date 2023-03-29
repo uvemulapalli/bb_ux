@@ -31,6 +31,14 @@ export class PricingRequest {
   spotprice: Array<any> = [];
 }
 
+export class PricingRequest1 {
+  ticker: string = '';
+  strikeprice: string = '';
+  spotprice: Number = 0;
+  volatility: string = '';
+  expiry: string = '';
+}
+
 export class PricingResponseType {
   data: PricingResponse[] = [];
 }
@@ -181,7 +189,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.selectedFilteredContractData = new DataDisplayResponse();
     this.chartOptions.data[0].dataPoints = [];
     this.chartOptions.data[1].dataPoints = [];
-    this.chart.render();
+    // this.chart.render();
   }
 
   public generateReport():void {
@@ -208,14 +216,17 @@ export class AppComponent implements OnInit, AfterViewInit {
           // console.log('event - ' + JSON.stringify(event));
           var blocksholesData: any = event.body.data[0].test_data;
           console.log(blocksholesData);
-          let pricingRequests: Array<any> = [];
+          /* let pricingRequests: Array<any> = [];
           blocksholesData.forEach((element: any) => {
             this.chartOptions.data[0].dataPoints.push({x: element.spot, y: element.simulatedPrice});
             // this.chart.render();
-            pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot * 100));
+             *//* pricingRequests.push(this.createSinglePricingRequest(this.selectedFilteredContractData.contractSymbol, element.spot / 100, element.strike,
+                                element.volatility, '1.04')); *//*
+            pricingRequests.push(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
           });
-          console.log(pricingRequests);
-          this.sendPricingRequestForScreen3(pricingRequests);
+          console.log(pricingRequests); */
+          // this.sendPricingRequestForScreen3(pricingRequests);
+          this.sendPricingRequestForScreen3(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
         }
       },
       error: (err: any) => {
@@ -511,21 +522,33 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.newSpotPrice = this.spotPriceForm.get('spotPrice')?.value;
     this.trackInstrumentProgress('Adding spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
     let pricingRequests: Array<any> = [];
-    pricingRequests.push(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice));
+    pricingRequests.push(this.createSinglePricingRequest(this.contractSymbol, this.newSpotPrice, '', '', ''));
     this.sendPricingRequestForScreen2(pricingRequests);
     this.isSpotPriceSaved = true;
     this.trackInstrumentProgress('Added spot price for instrument : Contract ID - ' + this.contractSymbol + ', Spot Price - ' + this.newSpotPrice);
   }
 
-  private createSinglePricingRequest(contractSymbol: any, spotPrice: any) {
-    const pricingRequest: PricingRequest = new PricingRequest();
-    pricingRequest.instrumentId = contractSymbol;
-    pricingRequest.spotprice = [Number(spotPrice)];
+  private createSinglePricingRequest(contractSymbol: any, spotPrice: any,
+      strikeprice: any, volatility: any, expiry: any) {
+    const pricingRequest: PricingRequest1 = new PricingRequest1();
+    pricingRequest.ticker = contractSymbol;
+    pricingRequest.spotprice = Number(spotPrice);
+    if(strikeprice) {
+      pricingRequest.strikeprice = strikeprice;
+    }
+
+    if(volatility) {
+      pricingRequest.volatility = volatility;
+    }
+
+    if(expiry) {
+      pricingRequest.expiry = expiry;
+    }
     return pricingRequest;
   }
 
   private sendPricingRequestForScreen3(requestBody: any): void {
-    this.uploadService.sendPricingRequest(requestBody).subscribe({
+    this.uploadService.sendPricingRequestForScreen3(requestBody).subscribe({
     // this.uploadService.sendPricingRequestFromJson().subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
@@ -579,20 +602,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private handlePricingResponseForSingleRequestScreen3(pricingResponseType: any) {
-    var responses: PricingResponseType[] = pricingResponseType.data;
+    var responses: PricingResponseType[] = pricingResponseType;
     if (Array.isArray(responses)) {
       console.log('Pricing Responses - ' + JSON.stringify(responses));
       responses.forEach((response: any) => {
-        var values: Value[] = response.values;
-        // console.log('values - ' + JSON.stringify(values));
-        if (Array.isArray(values)) {
-          values.forEach((value: any) => {
-            if (value) {
-              this.chartOptions.data[1].dataPoints.push({x: value.spotPrice/100, y: value.predictedPrice});
-              // this.chartOptions.data[1].dataPoints.push({x:value.predictedPrice , y: value.spotPrice/100});
-              // this.chart.render();
-            }
-          });
+        var value: any = response;
+        console.log('value - ' + JSON.stringify(value));
+        if (value) {
+          this.chartOptions.data[0].dataPoints.push({x: value.spot * 100, y: value.bsprice * 100});
+          this.chartOptions.data[1].dataPoints.push({x: value.spot * 100, y: value.modelprice * 100});
+          // this.chartOptions.data[1].dataPoints.push({x:value.predictedPrice , y: value.spotPrice/100});
+          this.chart.render();
         }
       });
     }
@@ -644,7 +664,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     },
     data: [{
     type: "line",
-    // lineColor: "#FF5733",
+    lineColor: "blue",
     // legendMarkerType: "square",
     showInLegend: true,
     name: "Blocksholes Price",
@@ -656,7 +676,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       ]
     }, {
     type: "line",
-    // lineColor: "#FFC300", // #FF5733, #FFC300
+    lineDashType: "dash",
+    lineThickness: 5,
+    lineColor: "red", // #FF5733, #FFC300
     // legendMarkerType: "square",
     showInLegend: true,
     name: "Predicted Price",
