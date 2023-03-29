@@ -668,6 +668,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     data: [{
     type: "line",
     lineColor: "blue",
+    indexLabelFontColor: "blue",
     // legendMarkerType: "square",
     showInLegend: true,
     name: "Blocksholes Price",
@@ -682,6 +683,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     lineDashType: "dash",
     lineThickness: 5,
     lineColor: "red", // #FF5733, #FFC300
+    indexLabelFontColor: "red",
     // legendMarkerType: "square",
     showInLegend: true,
     name: "Predicted Price",
