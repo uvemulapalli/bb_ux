@@ -146,8 +146,8 @@
         <div *ngIf="selectedFilteredContractData.ticker"><br>
           <div><b>Ticker : </b>{{selectedFilteredContractData.ticker}}</div><br>
           <div><b>Contract : </b>{{selectedFilteredContractData.contractSymbol}}</div><br>
-          <div><b>Spot : </b>{{selectedFilteredContractData.spotPrice}}</div><br>
-          <div><b>Strike : </b>{{selectedFilteredContractData.strikePrice}}</div><br>
+          <div><b>Spot : </b>{{selectedFilteredContractData.spotPrice / 100}}</div><br>
+          <div><b>Strike : </b>{{selectedFilteredContractData.strikePrice / 100}}</div><br>
           <div><b>Volatility : </b>{{selectedFilteredContractData.volatility}}</div><br>
           <div><b>Expiry : </b>{{selectedFilteredContractData.expirationDate}}</div><br>
           <div>

@@ -76,7 +76,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public selectedFilteredContractData:DataDisplayResponse = new DataDisplayResponse();
   public userSearchText:string = '';
   public filteredContractData:any = [];
-  title = 'Derivative Price';
+  title = 'Derivatives Pricing';
 
   tab1Title = 'Simulation';
 
@@ -194,6 +194,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private calculateDiff(dateSent: any){
+     let currentDate = new Date();
+     dateSent = new Date(dateSent);
+     return Math.floor((Date.UTC(dateSent.getFullYear(), dateSent.getMonth(), dateSent.getDate()) - Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())) /(1000 * 60 * 60 * 24));
+  }
+
   public generateReport():void {
     this.showLoading = true;
     this.chartOptions.data[0].dataPoints = [];
@@ -203,16 +209,31 @@ export class AppComponent implements OnInit, AfterViewInit {
     var expiry: any = '';
     if(this.selectedFilteredContractData.expirationDate) {
       expiry = this.datepipe.transform(new Date(this.selectedFilteredContractData.expirationDate), 'yyyy-MM-dd');
+      var differenceInYrs = this.calculateDiff(this.selectedFilteredContractData.expirationDate) / 365;
+      console.log("difference - " + differenceInYrs);
+      expiry = 1 + differenceInYrs;
     }
-    let requestBody = [{
+
+    var strike: any = '';
+    if(this.selectedFilteredContractData.strikePrice) {
+      strike = this.selectedFilteredContractData.strikePrice / 100;
+    }
+
+    var spot: any = '';
+    if(this.selectedFilteredContractData.spotPrice){
+      spot = this.selectedFilteredContractData.spotPrice / 100;
+    }
+
+    let requestBody = {
       "ticker": this.selectedFilteredContractData.contractSymbol,
-      "strikeprice": this.selectedFilteredContractData.strikePrice.toString(),
-      "spotprice": this.selectedFilteredContractData.spotPrice.toString(),
+      "strikeprice": strike.toString(),
+      "spotprice": spot,
       "volatility": this.selectedFilteredContractData.volatility.toString(),
       "expiry": expiry.toString()
-    }];
+    };
     //console.log(requestBody);
-    this.sendPricingRequestForScreen3(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
+    // this.sendPricingRequestForScreen3(this.createSinglePricingRequest('AAPL230915C00111110', 2.11, '1.575', '0.74', '1.04'));
+    this.sendPricingRequestForScreen3(requestBody);
     /* this.uploadService.generateReport(requestBody).subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
